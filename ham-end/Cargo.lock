@@ -3549,7 +3549,7 @@ dependencies = [
 
 [[package]]
 name = "node-template-runtime"
-version = "3.0.0-monthly-2021-09+1"
+version = "0.0.1"
 dependencies = [
  "frame-benchmarking",
  "frame-executive",
@@ -3561,6 +3561,7 @@ dependencies = [
  "pallet-aura",
  "pallet-balances",
  "pallet-grandpa",
+ "pallet-ham",
  "pallet-randomness-collective-flip",
  "pallet-sudo",
  "pallet-template",
@@ -3806,6 +3807,19 @@ dependencies = [
  "sp-session",
  "sp-staking",
  "sp-std",
+]
+
+[[package]]
+name = "pallet-ham"
+version = "0.0.1"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-balances",
+ "parity-scale-codec",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
 ]
 
 [[package]]

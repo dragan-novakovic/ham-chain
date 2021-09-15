@@ -96,7 +96,7 @@ pub mod pallet {
 					// Update the value in storage with the incremented result.
 					<Something<T>>::put(new);
 					Ok(())
-				},
+				}
 			}
 		}
 	}

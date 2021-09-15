@@ -1,12 +1,10 @@
 [package]
-authors = ['Substrate DevHub <https://github.com/substrate-developer-hub>']
+authors = ['Dragan Novakovic <https://github.com/dragan-novakovic']
 edition = '2018'
-homepage = 'https://substrate.dev'
 license = 'Unlicense'
 name = 'node-template-runtime'
 publish = false
-repository = 'https://github.com/substrate-developer-hub/substrate-node-template/'
-version = '3.0.0-monthly-2021-09+1'
+version = '0.0.1'
 
 [package.metadata.docs.rs]
 targets = ['x86_64-unknown-linux-gnu']
@@ -14,7 +12,10 @@ targets = ['x86_64-unknown-linux-gnu']
 [dependencies.pallet-template]
 default-features = false
 path = '../pallets/template'
-version = '3.0.0-monthly-2021-09+1'
+
+[dependencies.pallet-ham]
+default-features = false
+path = '../pallets/ham'
 
 [build-dependencies.substrate-wasm-builder]
 git = 'https://github.com/paritytech/substrate.git'
