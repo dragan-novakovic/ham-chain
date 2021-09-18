@@ -8,8 +8,8 @@ pub mod pallet_ham {
 	use frame_support::{
 		dispatch::{DispatchResult, DispatchResultWithPostInfo},
 		pallet_prelude::*,
-		sp_runtime::traits::{Hash, Zero},
-		traits::{Currency, ExistenceRequirement, Randomness},
+		sp_runtime::traits::Hash,
+		traits::Randomness,
 	};
 	use frame_system::pallet_prelude::*;
 	use sp_core::H256;
@@ -137,7 +137,7 @@ pub mod pallet_ham {
 		) -> DispatchResult {
 			ensure!(!<HamOwner<T>>::contains_key(ham_id), "Ham already contains key");
 
-			// let owned_ham_count = Self::owned_ham_count(&to);
+			//let owned_ham_count = Self::owned_ham_count(&to);
 			// let new_owned_ham_count = owned_ham_count
 			// 	.checked_add(1)
 			// 	.ok_or("Overflow adding a new ham to account balance")?;
@@ -151,6 +151,8 @@ pub mod pallet_ham {
 			<Hams<T>>::insert(ham_id, new_ham);
 			<HamOwner<T>>::insert(ham_id, Some(&to));
 			Self::deposit_event(Event::Created(to, ham_id));
+
+			// <AllHamsArray<T>::insert(0, ham_id);
 
 			Ok(().into())
 		}
