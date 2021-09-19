@@ -37,8 +37,11 @@ pub mod pallet_ham {
 	pub struct Ham<Hash, Balance> {
 		id: Hash,
 		origin: Hash,
+		created_at: String,
 		price: Balance,
 		ham_type: HamKind,
+		owner: AccountOf<T>,
+		previous_owners: Vec<AccountOf<T>>,
 	}
 
 	#[pallet::pallet]
@@ -58,22 +61,22 @@ pub mod pallet_ham {
 	#[pallet::error]
 	pub enum Error<T> {
 		NonceOverflow,
-		KittyCntOverflow,
-		/// An account cannot own more Kitties than `MaxKittyCount`.
-		ExceedMaxKittyOwned,
+		HamCountOverflow,
+		/// An account cannot own more Hams than `MaxHamCount`.
+		ExceedMaxHamOwned,
 		/// Buyer cannot be the owner.
-		BuyerIsKittyOwner,
-		/// Cannot transfer a kitty to its owner.
+		BuyerIsHamOwner,
+		/// Cannot transfer a ham to its owner.
 		TransferToSelf,
-		/// Handles checking whether the Kitty exists.
-		KittyNotExist,
-		/// Handles checking that the Kitty is owned by the account transferring, buying or setting a price for it.
-		NotKittyOwner,
-		/// Ensures the Kitty is for sale.
-		KittyNotForSale,
+		/// Handles checking whether the Ham exists.
+		HamNotExist,
+		/// Handles checking that the Ham is owned by the account transferring, buying or setting a price for it.
+		NotHamOwner,
+		/// Ensures the Ham is for sale.
+		HamNotForSale,
 		/// Ensures that the buying price is greater than the asking price.
-		KittyBidPriceTooLow,
-		/// Ensures that an account has enough funds to purchase a Kitty.
+		HamBidPriceTooLow,
+		/// Ensures that an account has enough funds to purchase a Ham.
 		NotEnoughBalance,
 	}
 
@@ -134,8 +137,11 @@ pub mod pallet_ham {
 			let new_ham = Ham {
 				id: random_hash,
 				origin: random_hash,
+				created_at: String::from("Begining of time"),
 				price: 0u8.into(),
 				ham_type: HamKind::Regular,
+				owner: sender,
+				previous_owners: vec![sender],
 			};
 
 			Self::mint(sender, random_hash, new_ham)?;
@@ -160,21 +166,22 @@ pub mod pallet_ham {
 			ham_id: T::Hash,
 			new_ham: Ham<T::Hash, T::Balance>,
 		) -> DispatchResult {
-			ensure!(!<HamOwner<T>>::contains_key(ham_id), "Ham already contains key");
+			ensure!(!<HamOwner<T>>::contains_key(ham_id), Error::<T>::BuyerIsHamOwner);
 
-			// let owned_hams_count = Self::owned_hams_count(&to);
-			// let new_owned_hams_count = owned_hams_count
-			// 	.checked_add(1)
-			// 	.ok_or("Overflow adding a new ham to account balance")?;
+			let owned_hams_count = Self::owned_hams_count(&to);
+			let new_owned_hams_count =
+				owned_hams_count.checked_add(1).ok_or(Error::<T>::NotEnoughBalance)?;
 
 			let all_hams_count = Self::all_hams_count();
-			let new_all_hams_count = all_hams_count
-				.checked_add(1)
-				.ok_or("Overflow adding a new ham to total supply")?;
+			let new_all_hams_count =
+				all_hams_count.checked_add(1).ok_or(Error::<T>::HamCountOverflow)?;
 
 			// Update storage with new Ham
 			<Hams<T>>::insert(ham_id, new_ham);
 			<HamOwner<T>>::insert(ham_id, Some(&to));
+			<HamsOwned<T>>::try_mutate(&to, |ham_arr| ham_arr.try_push(ham_id))
+				.map_err(|_| Error::<T>::ExceedMaxHamOwned);
+			<OwnedHamsCount<T>>::insert(&to, new_owned_hams_count);
 
 			Self::deposit_event(Event::Created(to, ham_id));
 
