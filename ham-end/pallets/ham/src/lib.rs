@@ -9,10 +9,13 @@ pub mod pallet_ham {
 		dispatch::{DispatchResult, DispatchResultWithPostInfo},
 		pallet_prelude::*,
 		sp_runtime::traits::Hash,
-		traits::Randomness,
+		traits::{Currency, Randomness},
 	};
 	use frame_system::pallet_prelude::*;
 	use sp_core::H256;
+
+	#[cfg(feature = "std")]
+	use serde::{Deserialize, Serialize};
 
 	impl Default for HamKind {
 		fn default() -> Self {
@@ -25,6 +28,10 @@ pub mod pallet_ham {
 		PataNegra,
 		Regular,
 	}
+
+	type AccountOf<T> = <T as frame_system::Config>::AccountId;
+	type BalanceOf<T> =
+		<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
 	#[derive(Clone, Encode, Decode, Default, PartialEq)]
 	pub struct Ham<Hash, Balance> {
@@ -45,11 +52,29 @@ pub mod pallet_ham {
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 		type HamRandomness: Randomness<H256, u32>;
 		type MaxHamsOwned: Get<u32>;
+		type Currency: Currency<Self::AccountId>;
 	}
 
 	#[pallet::error]
 	pub enum Error<T> {
 		NonceOverflow,
+		KittyCntOverflow,
+		/// An account cannot own more Kitties than `MaxKittyCount`.
+		ExceedMaxKittyOwned,
+		/// Buyer cannot be the owner.
+		BuyerIsKittyOwner,
+		/// Cannot transfer a kitty to its owner.
+		TransferToSelf,
+		/// Handles checking whether the Kitty exists.
+		KittyNotExist,
+		/// Handles checking that the Kitty is owned by the account transferring, buying or setting a price for it.
+		NotKittyOwner,
+		/// Ensures the Kitty is for sale.
+		KittyNotForSale,
+		/// Ensures that the buying price is greater than the asking price.
+		KittyBidPriceTooLow,
+		/// Ensures that an account has enough funds to purchase a Kitty.
+		NotEnoughBalance,
 	}
 
 	#[pallet::event]
@@ -137,22 +162,24 @@ pub mod pallet_ham {
 		) -> DispatchResult {
 			ensure!(!<HamOwner<T>>::contains_key(ham_id), "Ham already contains key");
 
-			//let owned_ham_count = Self::owned_ham_count(&to);
-			// let new_owned_ham_count = owned_ham_count
+			// let owned_hams_count = Self::owned_hams_count(&to);
+			// let new_owned_hams_count = owned_hams_count
 			// 	.checked_add(1)
 			// 	.ok_or("Overflow adding a new ham to account balance")?;
 
-			// let all_hams_count = Self::all_hams_count();
-			// let new_all_hams_count = all_hams_count
-			// 	.checked_add(1)
-			// 	.ok_or("Overflow adding a new ham to total supply")?;
+			let all_hams_count = Self::all_hams_count();
+			let new_all_hams_count = all_hams_count
+				.checked_add(1)
+				.ok_or("Overflow adding a new ham to total supply")?;
 
 			// Update storage with new Ham
 			<Hams<T>>::insert(ham_id, new_ham);
 			<HamOwner<T>>::insert(ham_id, Some(&to));
+
 			Self::deposit_event(Event::Created(to, ham_id));
 
-			// <AllHamsArray<T>::insert(0, ham_id);
+			<AllHamsArray<T>>::insert(all_hams_count, ham_id);
+			<AllHamsCount<T>>::put(new_all_hams_count);
 
 			Ok(().into())
 		}
