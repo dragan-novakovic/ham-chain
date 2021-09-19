@@ -1,1 +1,10 @@
-{}
+{
+  "HamKind": {
+    "_enum": ["PataNegra", "Regular"]
+  },
+  "Ham": {
+    "id": "[u8; 16]",
+    "price": "Option<Balance>",
+    "ham_kind": "Gender"
+  }
+}

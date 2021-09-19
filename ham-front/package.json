@@ -1,8 +1,7 @@
 {
-  "name": "substrate-front-end-template",
-  "version": "0.1.1",
-  "private": true,
-  "author": "Parity Technologies <admin@parity.io>",
+  "name": "ham-front",
+  "version": "0.1.0",
+  "author": "Dragan Novakovic <d.novakovic1810@yahoo.com>",
   "license": "Unlicense",
   "scripts": {
     "start": "react-app-rewired start",
