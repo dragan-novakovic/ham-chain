@@ -42,9 +42,6 @@ pub use sp_runtime::{Perbill, Permill};
 
 /// Import the template pallet.
 pub use pallet_ham;
-pub use pallet_template;
-
-//pub use pallet_ham;
 
 /// An index to a block.
 pub type BlockNumber = u32;
@@ -269,11 +266,6 @@ impl pallet_sudo::Config for Runtime {
 	type Call = Call;
 }
 
-/// Configure the pallet-template in pallets/template.
-impl pallet_template::Config for Runtime {
-	type Event = Event;
-}
-
 parameter_types! {
 	pub const MaxHamsOwned: u32 = 100;
 }
@@ -300,7 +292,6 @@ construct_runtime!(
 		TransactionPayment: pallet_transaction_payment::{Pallet, Storage},
 		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
 		// Include the custom logic from the pallet-template in the runtime.
-		TemplateModule: pallet_template::{Pallet, Call, Storage, Event<T>},
 		HamModule: pallet_ham::{Pallet, Call, Storage, Event<T>}
 	}
 );

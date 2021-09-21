@@ -3817,7 +3817,6 @@ dependencies = [
  "pallet-balances",
  "pallet-randomness-collective-flip",
  "parity-scale-codec",
- "serde",
  "sp-core",
  "sp-io",
  "sp-runtime",
