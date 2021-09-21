@@ -12,10 +12,10 @@ pub mod pallet_ham {
 		traits::{Currency, Randomness},
 	};
 	use frame_system::pallet_prelude::*;
-	use sp_core::H256;
+	use sp_core::{blake2_128, H256};
 
-	#[cfg(feature = "std")]
-	use serde::{Deserialize, Serialize};
+	// #[cfg(feature = "std")]
+	// use serde::{Deserialize, Serialize};
 
 	impl Default for HamKind {
 		fn default() -> Self {
@@ -33,12 +33,12 @@ pub mod pallet_ham {
 	type BalanceOf<T> =
 		<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
-	#[derive(Clone, Encode, Decode, Default, PartialEq)]
-	pub struct Ham<Hash, Balance> {
-		id: Hash,
-		origin: Hash,
+	#[derive(Clone, Encode, Decode, PartialEq)]
+	pub struct Ham<T: Config> {
+		id: [u8; 16],
+		origin: String,
 		created_at: String,
-		price: Balance,
+		price: Option<BalanceOf<T>>,
 		ham_type: HamKind,
 		owner: AccountOf<T>,
 		previous_owners: Vec<AccountOf<T>>,
@@ -92,8 +92,7 @@ pub mod pallet_ham {
 
 	#[pallet::storage]
 	#[pallet::getter(fn hams)]
-	pub(super) type Hams<T: Config> =
-		StorageMap<_, Twox64Concat, T::Hash, Ham<T::Hash, T::Balance>, ValueQuery>;
+	pub(super) type Hams<T: Config> = StorageMap<_, Twox64Concat, T::Hash, Ham<T>, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn all_hams_count)]
@@ -134,19 +133,22 @@ pub mod pallet_ham {
 			let sender = ensure_signed(origin)?;
 			let random_hash = Self::random_hash(&sender);
 
-			let new_ham = Ham {
-				id: random_hash,
-				origin: random_hash,
-				created_at: String::from("Begining of time"),
-				price: 0u8.into(),
-				ham_type: HamKind::Regular,
-				owner: sender,
-				previous_owners: vec![sender],
-			};
-
-			Self::mint(sender, random_hash, new_ham)?;
+			Self::mint(sender, random_hash)?;
 			Self::increment_nonce()?;
 
+			Ok(().into())
+		}
+
+		#[pallet::weight(100)]
+		pub fn set_ham_price(
+			origin: OriginFor<T>,
+			ham_id: T::Hash,
+			new_price: Option<BalanceOf<T>>,
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
+
+			// get the ham object from storage
+			let mut ham = Self::hams(&ham_id).ok_or(Error::<T>::HamNotExist);
 			Ok(().into())
 		}
 	}
@@ -161,11 +163,19 @@ pub mod pallet_ham {
 			})
 		}
 
-		fn mint(
-			to: T::AccountId,
-			ham_id: T::Hash,
-			new_ham: Ham<T::Hash, T::Balance>,
-		) -> DispatchResult {
+		fn mint(to: T::AccountId, random_hash: [u8; 16]) -> DispatchResult {
+			let new_ham = Ham {
+				id: random_hash,
+				origin: random_hash,
+				created_at: String::from("Begining of time"),
+				price: 0u8.into(),
+				ham_type: HamKind::Regular,
+				owner: to,
+				previous_owners: vec![to],
+			};
+
+			let ham_id = new_ham.id;
+
 			ensure!(!<HamOwner<T>>::contains_key(ham_id), Error::<T>::BuyerIsHamOwner);
 
 			let owned_hams_count = Self::owned_hams_count(&to);
@@ -196,6 +206,14 @@ pub mod pallet_ham {
 			let seed = T::HamRandomness::random_seed();
 
 			T::Hashing::hash_of(&(seed, &sender, nonce))
+		}
+
+		fn gen_kinda_hash() -> [u8; 16] {
+			let payload = (
+				T::HamRandomness::random(&b"dna"[..]).0,
+				<frame_system::Pallet<T>>::block_number(),
+			);
+			payload.using_encoded(blake2_128)
 		}
 	}
 }
