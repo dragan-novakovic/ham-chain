@@ -216,22 +216,6 @@ pub mod pallet_ham {
 // #[cfg(feature = "runtime-benchmarks")]
 // mod benchmarking;
 
-// #[frame_support::pallet]
-// pub mod pallet {
-// 	use frame_support::{dispatch::DispatchResult, pallet_prelude::*};
-// 	use frame_system::pallet_prelude::*;
-
-// 	/// Configure the pallet by specifying the parameters and types on which it depends.
-// 	#[pallet::config]
-// 	pub trait Config: frame_system::Config {
-// 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
-// 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
-// 	}
-
-// 	#[pallet::pallet]
-// 	#[pallet::generate_store(pub(super) trait Store)]
-// 	pub struct Pallet<T>(_);
-
 // 	#[pallet::storage]
 // 	#[pallet::getter(fn something)]
 // 	// Learn more about declaring storage items:
@@ -247,15 +231,6 @@ pub mod pallet_ham {
 // 		/// Event documentation should end with an array that provides descriptive names for event
 // 		/// parameters. [something, who]
 // 		SomethingStored(u32, T::AccountId),
-// 	}
-
-// 	// Errors inform users that something went wrong.
-// 	#[pallet::error]
-// 	pub enum Error<T> {
-// 		/// Error names should be descriptive.
-// 		NoneValue,
-// 		/// Errors should have helpful documentation associated with them.
-// 		StorageOverflow,
 // 	}
 
 // 	// Dispatchable functions allows users to interact with the pallet and invoke state changes.
