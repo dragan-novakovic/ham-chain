@@ -6,16 +6,14 @@ pub use pallet_ham::*;
 pub mod pallet_ham {
 
 	use frame_support::{
-		dispatch::{DispatchResult, DispatchResultWithPostInfo},
+		dispatch::DispatchResult,
+		log::info,
 		pallet_prelude::*,
 		sp_runtime::traits::Hash,
 		traits::{Currency, Randomness},
 	};
 	use frame_system::pallet_prelude::*;
-	use sp_core::{blake2_128, H256};
-
-	// #[cfg(feature = "std")]
-	// use serde::{Deserialize, Serialize};
+	use sp_core::hashing::blake2_128;
 
 	impl Default for HamKind {
 		fn default() -> Self {
@@ -36,8 +34,6 @@ pub mod pallet_ham {
 	#[derive(Clone, Encode, Decode, PartialEq)]
 	pub struct Ham<T: Config> {
 		id: [u8; 16],
-		origin: String,
-		created_at: String,
 		price: Option<BalanceOf<T>>,
 		ham_type: HamKind,
 		owner: AccountOf<T>,
@@ -53,7 +49,7 @@ pub mod pallet_ham {
 	pub trait Config: pallet_balances::Config + frame_system::Config {
 		/// Because this pallet emits events, it dependes on the runtime's definition of an event.
 		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
-		type HamRandomness: Randomness<H256, u32>;
+		type HamRandomness: Randomness<Self::Hash, Self::BlockNumber>;
 		type MaxHamsOwned: Get<u32>;
 		type Currency: Currency<Self::AccountId>;
 	}
@@ -92,7 +88,7 @@ pub mod pallet_ham {
 
 	#[pallet::storage]
 	#[pallet::getter(fn hams)]
-	pub(super) type Hams<T: Config> = StorageMap<_, Twox64Concat, T::Hash, Ham<T>, ValueQuery>;
+	pub(super) type Hams<T: Config> = StorageMap<_, Twox64Concat, T::Hash, Ham<T>>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn all_hams_count)]
@@ -102,10 +98,6 @@ pub mod pallet_ham {
 	#[pallet::getter(fn owner_of)]
 	pub(super) type HamOwner<T: Config> =
 		StorageMap<_, Twox64Concat, T::Hash, Option<T::AccountId>, ValueQuery>;
-
-	#[pallet::storage]
-	#[pallet::getter(fn ham_by_index)]
-	pub(super) type AllHamsArray<T: Config> = StorageMap<_, Twox64Concat, u64, T::Hash, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn ham_of_owner_by_index)]
@@ -129,32 +121,33 @@ pub mod pallet_ham {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::weight(100)]
-		pub fn create_ham(origin: OriginFor<T>) -> DispatchResultWithPostInfo {
+		pub fn create_ham(origin: OriginFor<T>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
-			let random_hash = Self::random_hash(&sender);
 
-			Self::mint(sender, random_hash)?;
-			Self::increment_nonce()?;
+			let ham_id = Self::mint(sender.clone(), Self::gen_kinda_hash(), HamKind::Regular)?;
 
-			Ok(().into())
+			info!("A Ham is born with ID {:?}.", ham_id);
+			// Self::increment_nonce()?;
+			Self::deposit_event(Event::Created(sender, ham_id));
+			Ok(())
 		}
 
 		#[pallet::weight(100)]
 		pub fn set_ham_price(
 			origin: OriginFor<T>,
 			ham_id: T::Hash,
-			new_price: Option<BalanceOf<T>>,
+			_new_price: Option<BalanceOf<T>>,
 		) -> DispatchResult {
-			let sender = ensure_signed(origin)?;
+			let _sender = ensure_signed(origin)?;
 
 			// get the ham object from storage
-			let mut ham = Self::hams(&ham_id).ok_or(Error::<T>::HamNotExist);
+			let mut _ham = Self::hams(&ham_id).ok_or(Error::<T>::HamNotExist);
 			Ok(().into())
 		}
 	}
 
 	impl<T: Config> Pallet<T> {
-		fn increment_nonce() -> DispatchResult {
+		fn _increment_nonce() -> DispatchResult {
 			<Nonce<T>>::try_mutate(|nonce| {
 				let next = nonce.checked_add(1).ok_or(Error::<T>::NonceOverflow)?;
 				*nonce = next;
@@ -163,45 +156,38 @@ pub mod pallet_ham {
 			})
 		}
 
-		fn mint(to: T::AccountId, random_hash: [u8; 16]) -> DispatchResult {
+		fn mint(
+			owner: T::AccountId,
+			random_hash: [u8; 16],
+			ham_type: HamKind,
+		) -> Result<T::Hash, Error<T>> {
 			let new_ham = Ham {
 				id: random_hash,
-				origin: random_hash,
-				created_at: String::from("Begining of time"),
-				price: 0u8.into(),
-				ham_type: HamKind::Regular,
-				owner: to,
-				previous_owners: vec![to],
+				price: None,
+				ham_type,
+				owner: owner.clone(),
+				previous_owners: vec![owner.clone()],
 			};
 
-			let ham_id = new_ham.id;
-
-			ensure!(!<HamOwner<T>>::contains_key(ham_id), Error::<T>::BuyerIsHamOwner);
-
-			let owned_hams_count = Self::owned_hams_count(&to);
-			let new_owned_hams_count =
-				owned_hams_count.checked_add(1).ok_or(Error::<T>::NotEnoughBalance)?;
+			let ham_hash = T::Hashing::hash_of(&new_ham);
 
 			let all_hams_count = Self::all_hams_count();
 			let new_all_hams_count =
 				all_hams_count.checked_add(1).ok_or(Error::<T>::HamCountOverflow)?;
 
 			// Update storage with new Ham
-			<Hams<T>>::insert(ham_id, new_ham);
-			<HamOwner<T>>::insert(ham_id, Some(&to));
-			<HamsOwned<T>>::try_mutate(&to, |ham_arr| ham_arr.try_push(ham_id))
-				.map_err(|_| Error::<T>::ExceedMaxHamOwned);
-			<OwnedHamsCount<T>>::insert(&to, new_owned_hams_count);
-
-			Self::deposit_event(Event::Created(to, ham_id));
-
-			<AllHamsArray<T>>::insert(all_hams_count, ham_id);
+			<Hams<T>>::insert(ham_hash, new_ham);
+			<HamOwner<T>>::insert(ham_hash, Some(&owner));
+			<HamsOwned<T>>::try_mutate(&owner, |ham_arr| ham_arr.try_push(ham_hash))
+				.map_err(|_| Error::<T>::ExceedMaxHamOwned)?;
 			<AllHamsCount<T>>::put(new_all_hams_count);
 
-			Ok(().into())
+			Self::deposit_event(Event::Created(owner, ham_hash));
+
+			Ok(ham_hash)
 		}
 
-		fn random_hash(sender: &T::AccountId) -> T::Hash {
+		fn _random_hash(sender: &T::AccountId) -> T::Hash {
 			let nonce = <Nonce<T>>::get();
 			let seed = T::HamRandomness::random_seed();
 
