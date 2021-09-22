@@ -13,12 +13,26 @@ pub mod pallet_ham {
 		traits::{Currency, Randomness},
 	};
 	use frame_system::pallet_prelude::*;
-	use sp_core::hashing::blake2_128;
+	use sp_io::hashing::blake2_128;
 
 	impl Default for HamKind {
 		fn default() -> Self {
 			HamKind::Regular
 		}
+	}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(trait Store)]
+	pub struct Pallet<T>(_);
+
+	/// Config the pallet by specifying the parameters and types it depends on.
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// Because this pallet emits events, it dependes on the runtime's definition of an event.
+		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
+		type HamRandomness: Randomness<Self::Hash, Self::BlockNumber>;
+		type MaxHamsOwned: Get<u32>;
+		type Currency: Currency<Self::AccountId>;
 	}
 
 	#[derive(Clone, Encode, Decode, PartialEq)]
@@ -38,20 +52,6 @@ pub mod pallet_ham {
 		ham_type: HamKind,
 		owner: AccountOf<T>,
 		previous_owners: Vec<AccountOf<T>>,
-	}
-
-	#[pallet::pallet]
-	#[pallet::generate_store(trait Store)]
-	pub struct Pallet<T>(_);
-
-	/// Config the pallet by specifying the parameters and types it depends on.
-	#[pallet::config]
-	pub trait Config: pallet_balances::Config + frame_system::Config {
-		/// Because this pallet emits events, it dependes on the runtime's definition of an event.
-		type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
-		type HamRandomness: Randomness<Self::Hash, Self::BlockNumber>;
-		type MaxHamsOwned: Get<u32>;
-		type Currency: Currency<Self::AccountId>;
 	}
 
 	#[pallet::error]
@@ -81,9 +81,9 @@ pub mod pallet_ham {
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
 		Created(T::AccountId, T::Hash),
-		PriceSet(T::AccountId, T::Hash, T::Balance),
+		PriceSet(T::AccountId, T::Hash),
 		Transferred(T::AccountId, T::AccountId, T::Hash),
-		Bought(T::AccountId, T::AccountId, T::Hash, T::Balance),
+		Bought(T::AccountId, T::AccountId, T::Hash),
 	}
 
 	// The pallet's runtime storage items.
