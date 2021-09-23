@@ -62,6 +62,10 @@ default = ["std"]
 std = [
     'frame-support/std',
     'frame-system/std',
-	'codec/std'
+	'codec/std',
+    'pallet-balances/std',
+    'pallet-randomness-collective-flip/std',
+    'sp-core/std',
+    'sp-runtime/std',
 ]
-try-runtime = ['frame-support/try-runtime']
+#try-runtime = ['frame-support/try-runtime']

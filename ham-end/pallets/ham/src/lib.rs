@@ -5,15 +5,18 @@ pub use pallet_ham::*;
 #[frame_support::pallet]
 pub mod pallet_ham {
 
+	use frame_support::pallet_prelude::*;
 	use frame_support::{
 		dispatch::DispatchResult,
 		log::info,
-		pallet_prelude::*,
 		sp_runtime::traits::Hash,
 		traits::{Currency, Randomness},
 	};
 	use frame_system::pallet_prelude::*;
 	use sp_io::hashing::blake2_128;
+
+	#[cfg(feature = "std")]
+	use sp_runtime::serde::{Deserialize, Serialize};
 
 	impl Default for HamKind {
 		fn default() -> Self {
@@ -48,7 +51,7 @@ pub mod pallet_ham {
 	#[derive(Clone, Encode, Decode, PartialEq)]
 	pub struct Ham<T: Config> {
 		id: [u8; 16],
-		price: Option<BalanceOf<T>>,
+		//	price: BalanceOf<T>,
 		ham_type: HamKind,
 		owner: AccountOf<T>,
 		previous_owners: Vec<AccountOf<T>>,
@@ -166,7 +169,7 @@ pub mod pallet_ham {
 		) -> Result<T::Hash, Error<T>> {
 			let new_ham = Ham {
 				id: random_hash,
-				price: None,
+				//price: T,
 				ham_type,
 				owner: owner.clone(),
 				previous_owners: vec![owner.clone()],
