@@ -70,16 +70,15 @@ pub mod pallet_ham {
 	}
 
 	type AccountOf<T> = <T as frame_system::Config>::AccountId;
-	//type BalanceOf<T> =
-	//	<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
+	type BalanceOf<T> =
+		<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
 	#[derive(Clone, Encode, Decode, PartialEq)]
 	pub struct Ham<T: Config> {
 		id: [u8; 16],
-		//	price: BalanceOf<T>,
+		price: Option<BalanceOf<T>>,
 		ham_type: HamKind,
 		owner: AccountOf<T>,
-		//previous_owners: Vec<AccountOf<T>>,
 	}
 
 	#[pallet::error]
@@ -192,13 +191,7 @@ pub mod pallet_ham {
 			random_hash: [u8; 16],
 			ham_type: HamKind,
 		) -> Result<T::Hash, Error<T>> {
-			let new_ham = Ham::<T> {
-				id: random_hash,
-				//price: T,
-				ham_type,
-				owner: owner.clone(),
-				//previous_owners: vec![owner.clone()],
-			};
+			let new_ham = Ham::<T> { id: random_hash, price: None, ham_type, owner: owner.clone() };
 
 			let ham_hash = T::Hashing::hash_of(&new_ham);
 
