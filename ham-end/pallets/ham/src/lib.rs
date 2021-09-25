@@ -10,7 +10,8 @@ pub mod pallet_ham {
 		dispatch::DispatchResult,
 		log::info,
 		sp_runtime::traits::Hash,
-		traits::{Currency, Randomness},
+		traits::{tokens::ExistenceRequirement, Currency, Randomness},
+		transactional,
 	};
 	use frame_system::pallet_prelude::*;
 	use sp_io::hashing::blake2_128;
@@ -108,7 +109,7 @@ pub mod pallet_ham {
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
 		Created(T::AccountId, T::Hash),
-		PriceSet(T::AccountId, T::Hash),
+		PriceSet(T::AccountId, T::Hash, Option<BalanceOf<T>>),
 		Transferred(T::AccountId, T::AccountId, T::Hash),
 		Bought(T::AccountId, T::AccountId, T::Hash),
 	}
@@ -153,7 +154,7 @@ pub mod pallet_ham {
 		#[pallet::weight(100)]
 		pub fn create_ham(origin: OriginFor<T>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
-
+			// setup HamKind
 			let ham_id = Self::mint(&sender, Self::gen_kinda_hash(), HamKind::Regular)?;
 
 			info!("A Ham is born with ID {:?}.", ham_id);
@@ -166,13 +167,62 @@ pub mod pallet_ham {
 		pub fn set_ham_price(
 			origin: OriginFor<T>,
 			ham_id: T::Hash,
-			//_new_price: Option<BalanceOf<T>>,
+			new_price: Option<BalanceOf<T>>,
 		) -> DispatchResult {
-			let _sender = ensure_signed(origin)?;
-
+			let sender = ensure_signed(origin)?;
 			// get the ham object from storage
-			let mut _ham = Self::hams(&ham_id).ok_or(Error::<T>::HamNotExist);
-			Ok(().into())
+			let mut ham = Self::hams(&ham_id).ok_or(Error::<T>::HamNotExist)?;
+			// set Ham Price
+			ham.price = new_price.clone();
+
+			<Hams<T>>::insert(&ham_id, ham);
+
+			// deposit a PriceSet event
+			Self::deposit_event(Event::PriceSet(sender, ham_id, new_price));
+			Ok(())
+		}
+
+		#[pallet::weight(100)]
+		pub fn transfer(origin: OriginFor<T>, to: T::AccountId, ham_id: T::Hash) -> DispatchResult {
+			let from = ensure_signed(origin)?;
+
+			// Ensure the ham exists and is called by the ham owner
+			ensure!(Self::is_ham_owner(&ham_id, &from)?, <Error<T>>::NotHamOwner);
+
+			// Verify the ham is not transferring back to its owner.
+			ensure!(from != to, <Error<T>>::TransferToSelf);
+
+			// Verify the recipient has the capacity to receive one more kitty
+			let to_owned = <HamsOwned<T>>::get(&to);
+			ensure!(
+				(to_owned.len() as u32) < T::MaxHamsOwned::get(),
+				<Error<T>>::ExceedMaxHamOwned
+			);
+
+			Self::transfer_ham_to(&ham_id, &to)?;
+
+			Self::deposit_event(Event::Transferred(from, to, ham_id));
+
+			Ok(())
+		}
+
+		#[transactional]
+		#[pallet::weight(100)]
+		pub fn buy_ham(
+			origin: OriginFor<T>,
+			ham_id: T::Hash,
+			bid_price: BalanceOf<T>,
+		) -> DispatchResult {
+			let buyer = ensure_signed(origin)?;
+
+			let ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
+			ensure!(ham.owner != buyer, <Error<T>>::BuyerIsHamOwner);
+			Ok(())
+		}
+
+		#[pallet::weight(100)]
+		pub fn tranfer_ham(origin: OriginFor<T>) -> DispatchResult {
+			Ok(())
 		}
 	}
 
@@ -225,6 +275,8 @@ pub mod pallet_ham {
 			);
 			payload.using_encoded(blake2_128)
 		}
+
+		fn transfer_from() {}
 	}
 }
 
