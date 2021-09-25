@@ -38,7 +38,24 @@ pub mod pallet_ham {
 		type Currency: Currency<Self::AccountId>;
 	}
 
-	#[derive(Clone, Encode, Decode, PartialEq)]
+	// Our pallet's genesis configuration.
+	#[pallet::genesis_config]
+	pub struct GenesisConfig<T: Config> {
+		pub hams: Vec<(T::AccountId, [u8; 16], HamKind)>,
+	}
+
+	#[pallet::genesis_build]
+	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
+		fn build(&self) {
+			// When building a ham from genesis config, we require the id and ham_type to be supplied.
+			for (acct, random_hash, ham_type) in &self.hams {
+				let _ = <Pallet<T>>::mint(acct, Some(random_hash.clone()), Some(ham_type.clone()));
+			}
+		}
+	}
+
+	#[derive(Encode, Decode, Debug, Clone, PartialEq)]
+	#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
 	pub enum HamKind {
 		PataNegra,
 		Regular,

@@ -6,6 +6,7 @@
 #[cfg(feature = "std")]
 include!(concat!(env!("OUT_DIR"), "/wasm_binary.rs"));
 
+use frame_support::traits::Currency;
 use pallet_grandpa::{
 	fg_primitives, AuthorityId as GrandpaId, AuthorityList as GrandpaAuthorityList,
 };
@@ -274,6 +275,7 @@ impl pallet_ham::Config for Runtime {
 	type Event = Event;
 	type HamRandomness = RandomnessCollectiveFlip;
 	type MaxHamsOwned = MaxHamsOwned;
+	type Currency = Currency<AccountId>;
 }
 
 // Create the runtime by composing the FRAME pallets that were previously configured.
