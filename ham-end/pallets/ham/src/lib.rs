@@ -16,7 +16,7 @@ pub mod pallet_ham {
 	use sp_io::hashing::blake2_128;
 
 	#[cfg(feature = "std")]
-	use sp_runtime::serde::{Deserialize, Serialize};
+	use serde::{Deserialize, Serialize};
 
 	impl Default for HamKind {
 		fn default() -> Self {
@@ -44,12 +44,20 @@ pub mod pallet_ham {
 		pub hams: Vec<(T::AccountId, [u8; 16], HamKind)>,
 	}
 
+	// Required to implement default for GenesisConfig.
+	#[cfg(feature = "std")]
+	impl<T: Config> Default for GenesisConfig<T> {
+		fn default() -> GenesisConfig<T> {
+			GenesisConfig { hams: vec![] }
+		}
+	}
+
 	#[pallet::genesis_build]
 	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
 		fn build(&self) {
 			// When building a ham from genesis config, we require the id and ham_type to be supplied.
 			for (acct, random_hash, ham_type) in &self.hams {
-				let _ = <Pallet<T>>::mint(acct, Some(random_hash.clone()), Some(ham_type.clone()));
+				let _ = <Pallet<T>>::mint(acct, random_hash.clone(), ham_type.clone());
 			}
 		}
 	}
@@ -147,7 +155,7 @@ pub mod pallet_ham {
 		pub fn create_ham(origin: OriginFor<T>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 
-			let ham_id = Self::mint(sender.clone(), Self::gen_kinda_hash(), HamKind::Regular)?;
+			let ham_id = Self::mint(&sender, Self::gen_kinda_hash(), HamKind::Regular)?;
 
 			info!("A Ham is born with ID {:?}.", ham_id);
 			// Self::increment_nonce()?;
@@ -180,11 +188,11 @@ pub mod pallet_ham {
 		}
 
 		fn mint(
-			owner: T::AccountId,
+			owner: &T::AccountId,
 			random_hash: [u8; 16],
 			ham_type: HamKind,
 		) -> Result<T::Hash, Error<T>> {
-			let new_ham = Ham {
+			let new_ham = Ham::<T> {
 				id: random_hash,
 				//price: T,
 				ham_type,
@@ -205,7 +213,7 @@ pub mod pallet_ham {
 				.map_err(|_| Error::<T>::ExceedMaxHamOwned)?;
 			<AllHamsCount<T>>::put(new_all_hams_count);
 
-			Self::deposit_event(Event::Created(owner, ham_hash));
+			Self::deposit_event(Event::Created(owner.clone(), ham_hash));
 
 			Ok(ham_hash)
 		}
