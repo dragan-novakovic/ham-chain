@@ -217,11 +217,32 @@ pub mod pallet_ham {
 
 			let ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
 			ensure!(ham.owner != buyer, <Error<T>>::BuyerIsHamOwner);
+
 			Ok(())
 		}
 
-		#[pallet::weight(100)]
-		pub fn tranfer_ham(origin: OriginFor<T>) -> DispatchResult {
+		#[transactional]
+		pub fn tranfer_ham_to(ham_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
+			let mut ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
+
+			let prev_owner = ham.owner.clone();
+
+			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
+				if let Some(ind) = owned.iter().position(|&id| id == *ham_id) {
+					owned.swap_remove(ind);
+					return Ok(());
+				}
+				Err(())
+			})
+			.map_err(|_| <Error<T>>::HamNotExist)?;
+
+			ham.owner = to.clone();
+
+			ham.price = None;
+			<Hams<T>>::insert(ham_id, ham);
+			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*kitty_id))
+				.map_err(|_| <Error<T>>::ExceedMaxKittyOwned)?;
+
 			Ok(())
 		}
 	}
