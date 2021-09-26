@@ -218,30 +218,32 @@ pub mod pallet_ham {
 			let ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
 			ensure!(ham.owner != buyer, <Error<T>>::BuyerIsHamOwner);
 
-			Ok(())
-		}
+			// Check the kitty is for sale and the kitty ask price <= bid_price
+			if let Some(ask_price) = kitty.price {
+				ensure!(ask_price <= bid_price, <Error<T>>::KittyBidPriceTooLow);
+			} else {
+				Err(<Error<T>>::KittyNotForSale)?;
+			}
 
-		#[transactional]
-		pub fn tranfer_ham_to(ham_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
-			let mut ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
+			// Check the buyer has enough free balance
+			ensure!(T::Currency::free_balance(&buyer) >= bid_price, <Error<T>>::NotEnoughBalance);
 
-			let prev_owner = ham.owner.clone();
+			// Verify the buyer has the capacity to receive one more kitty
+			let to_owned = <KittiesOwned<T>>::get(&buyer);
+			ensure!(
+				(to_owned.len() as u32) < T::MaxKittyOwned::get(),
+				<Error<T>>::ExceedMaxKittyOwned
+			);
 
-			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
-				if let Some(ind) = owned.iter().position(|&id| id == *ham_id) {
-					owned.swap_remove(ind);
-					return Ok(());
-				}
-				Err(())
-			})
-			.map_err(|_| <Error<T>>::HamNotExist)?;
+			let seller = kitty.owner.clone();
 
-			ham.owner = to.clone();
+			// Transfer the amount from buyer to seller
+			T::Currency::transfer(&buyer, &seller, bid_price, ExistenceRequirement::KeepAlive)?;
 
-			ham.price = None;
-			<Hams<T>>::insert(ham_id, ham);
-			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*kitty_id))
-				.map_err(|_| <Error<T>>::ExceedMaxKittyOwned)?;
+			// Transfer the kitty from seller to buyer
+			Self::transfer_kitty_to(&kitty_id, &buyer)?;
+
+			Self::deposit_event(Event::Bought(buyer, seller, kitty_id, bid_price));
 
 			Ok(())
 		}
@@ -282,6 +284,38 @@ pub mod pallet_ham {
 			Ok(ham_hash)
 		}
 
+		#[transactional]
+		pub fn tranfer_ham_to(ham_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
+			let mut ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
+
+			let prev_owner = ham.owner.clone();
+
+			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
+				if let Some(ind) = owned.iter().position(|&id| id == *ham_id) {
+					owned.swap_remove(ind);
+					return Ok(());
+				}
+				Err(())
+			})
+			.map_err(|_| <Error<T>>::HamNotExist)?;
+
+			ham.owner = to.clone();
+
+			ham.price = None;
+			<Hams<T>>::insert(ham_id, ham);
+			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*kitty_id))
+				.map_err(|_| <Error<T>>::ExceedMaxKittyOwned)?;
+
+			Ok(())
+		}
+
+		pub fn is_ham_owner(ham_id: &T::Hash, acct: &T::AccountId) -> Result<bool, Error<T>> {
+			match Self::hams(ham_id) {
+				Some(ham) => Ok(ham.owner == *acct),
+				None => Err(<Error<T>>::HamNotExist),
+			}
+		}
+
 		fn _random_hash(sender: &T::AccountId) -> T::Hash {
 			let nonce = <Nonce<T>>::get();
 			let seed = T::HamRandomness::random_seed();
@@ -296,8 +330,6 @@ pub mod pallet_ham {
 			);
 			payload.using_encoded(blake2_128)
 		}
-
-		fn transfer_from() {}
 	}
 }
 
