@@ -111,7 +111,7 @@ pub mod pallet_ham {
 		Created(T::AccountId, T::Hash),
 		PriceSet(T::AccountId, T::Hash, Option<BalanceOf<T>>),
 		Transferred(T::AccountId, T::AccountId, T::Hash),
-		Bought(T::AccountId, T::AccountId, T::Hash),
+		Bought(T::AccountId, T::AccountId, T::Hash, BalanceOf<T>),
 	}
 
 	// The pallet's runtime storage items.
@@ -218,32 +218,32 @@ pub mod pallet_ham {
 			let ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
 			ensure!(ham.owner != buyer, <Error<T>>::BuyerIsHamOwner);
 
-			// Check the kitty is for sale and the kitty ask price <= bid_price
-			if let Some(ask_price) = kitty.price {
-				ensure!(ask_price <= bid_price, <Error<T>>::KittyBidPriceTooLow);
+			// Check the ham is for sale and the ham ask price <= bid_price
+			if let Some(ask_price) = ham.price {
+				ensure!(ask_price <= bid_price, <Error<T>>::HamBidPriceTooLow);
 			} else {
-				Err(<Error<T>>::KittyNotForSale)?;
+				Err(<Error<T>>::HamNotForSale)?;
 			}
 
 			// Check the buyer has enough free balance
 			ensure!(T::Currency::free_balance(&buyer) >= bid_price, <Error<T>>::NotEnoughBalance);
 
-			// Verify the buyer has the capacity to receive one more kitty
-			let to_owned = <KittiesOwned<T>>::get(&buyer);
+			// Verify the buyer has the capacity to receive one more ham
+			let to_owned = <HamsOwned<T>>::get(&buyer);
 			ensure!(
-				(to_owned.len() as u32) < T::MaxKittyOwned::get(),
-				<Error<T>>::ExceedMaxKittyOwned
+				(to_owned.len() as u32) < T::MaxHamsOwned::get(),
+				<Error<T>>::ExceedMaxHamOwned
 			);
 
-			let seller = kitty.owner.clone();
+			let seller = ham.owner.clone();
 
 			// Transfer the amount from buyer to seller
 			T::Currency::transfer(&buyer, &seller, bid_price, ExistenceRequirement::KeepAlive)?;
 
-			// Transfer the kitty from seller to buyer
-			Self::transfer_kitty_to(&kitty_id, &buyer)?;
+			// Transfer the ham from seller to buyer
+			Self::transfer_ham_to(&ham_id, &buyer)?;
 
-			Self::deposit_event(Event::Bought(buyer, seller, kitty_id, bid_price));
+			Self::deposit_event(Event::Bought(buyer, seller, ham_id, bid_price));
 
 			Ok(())
 		}
@@ -285,7 +285,7 @@ pub mod pallet_ham {
 		}
 
 		#[transactional]
-		pub fn tranfer_ham_to(ham_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
+		pub fn transfer_ham_to(ham_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
 			let mut ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
 
 			let prev_owner = ham.owner.clone();
@@ -303,8 +303,8 @@ pub mod pallet_ham {
 
 			ham.price = None;
 			<Hams<T>>::insert(ham_id, ham);
-			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*kitty_id))
-				.map_err(|_| <Error<T>>::ExceedMaxKittyOwned)?;
+			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*ham_id))
+				.map_err(|_| <Error<T>>::ExceedMaxHamOwned)?;
 
 			Ok(())
 		}
