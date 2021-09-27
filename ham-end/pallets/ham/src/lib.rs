@@ -152,10 +152,13 @@ pub mod pallet_ham {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::weight(100)]
-		pub fn create_ham(origin: OriginFor<T>) -> DispatchResult {
+		pub fn create_ham(origin: OriginFor<T>, ham_kind: Option<HamKind>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
-			// setup HamKind
-			let ham_id = Self::mint(&sender, Self::gen_kinda_hash(), HamKind::Regular)?;
+			let ham_kind = match ham_kind {
+				Some(value) => value,
+				None => HamKind::default(),
+			};
+			let ham_id = Self::mint(&sender, Self::gen_kinda_hash(), ham_kind)?;
 
 			info!("A Ham is born with ID {:?}.", ham_id);
 			// Self::increment_nonce()?;
