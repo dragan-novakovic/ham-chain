@@ -1,6 +1,19 @@
 # ham-chain
 
 TLDR;
-1. Owner kreira novi ham, podesava inicijalne vrednosti
-2. Distributer (koji je node) radi resale
+1. Proizvodjac kreira novi ham, podesava inicijalne vrednosti
+```rust
+struct Ham {
+  id: Hash,
+  price: BalanceOf<T>,
+  ham_kind: HamKind
+  owner: AccountOf<T>
+  }
+```
+
+2. Distributer (koji je node) radi re-sale
+
 3. Krajnji korisnik ima celu putanju vlasnistva
+- Cela list vlasnika
+- Zadnja cena
+- Datumi Prodaje
