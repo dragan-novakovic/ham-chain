@@ -17,3 +17,9 @@ struct Ham {
 - Cela list vlasnika
 - Zadnja cena
 - Datumi Prodaje
+
+
+UI
+
+- Login centralizovan api - povezan sa wallet
+- Permisije
