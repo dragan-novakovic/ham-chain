@@ -1,5 +1,10 @@
 # ham-chain
 
+## Setup
+
+1. Download rust https://www.rust-lang.org/tools/install
+2. cargo build 
+
 TLDR;
 1. Proizvodjac kreira novi ham, podesava inicijalne vrednosti
 ```rust
