@@ -21,7 +21,7 @@ version = '3.0.0'
 
 [dependencies]
 jsonrpc-core = '18.0.0'
-structopt = '0.3.23'
+structopt = '0.3.25'
 
 [dependencies.node-template-runtime]
 path = '../runtime'

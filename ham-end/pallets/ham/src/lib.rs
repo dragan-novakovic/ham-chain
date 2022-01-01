@@ -5,15 +5,16 @@ pub use pallet_ham::*;
 #[frame_support::pallet]
 pub mod pallet_ham {
 
-	use frame_support::pallet_prelude::*;
 	use frame_support::{
 		dispatch::DispatchResult,
 		log::info,
+		pallet_prelude::*,
 		sp_runtime::traits::Hash,
 		traits::{tokens::ExistenceRequirement, Currency, Randomness},
 		transactional,
 	};
 	use frame_system::pallet_prelude::*;
+	use scale_info::TypeInfo;
 	use sp_io::hashing::blake2_128;
 
 	#[cfg(feature = "std")]
@@ -26,7 +27,7 @@ pub mod pallet_ham {
 	}
 
 	#[pallet::pallet]
-	#[pallet::generate_store(trait Store)]
+	#[pallet::generate_store(pub(super) trait Store)]
 	pub struct Pallet<T>(_);
 
 	/// Config the pallet by specifying the parameters and types it depends on.
@@ -56,15 +57,17 @@ pub mod pallet_ham {
 	#[pallet::genesis_build]
 	impl<T: Config> GenesisBuild<T> for GenesisConfig<T> {
 		fn build(&self) {
-			// When building a ham from genesis config, we require the id and ham_type to be supplied.
+			// When building a ham from genesis config, we require the id and ham_type to be
+			// supplied.
 			for (acct, random_hash, ham_type) in &self.hams {
 				let _ = <Pallet<T>>::mint(acct, random_hash.clone(), ham_type.clone());
 			}
 		}
 	}
 
-	#[derive(Encode, Decode, Debug, Clone, PartialEq)]
+	#[derive(Encode, Decode, Debug, Clone, PartialEq, TypeInfo)]
 	#[cfg_attr(feature = "std", derive(Serialize, Deserialize))]
+	#[scale_info(skip_type_params(T))]
 	pub enum HamKind {
 		PataNegra,
 		Regular,
@@ -74,7 +77,8 @@ pub mod pallet_ham {
 	type BalanceOf<T> =
 		<<T as Config>::Currency as Currency<<T as frame_system::Config>::AccountId>>::Balance;
 
-	#[derive(Clone, Encode, Decode, PartialEq)]
+	#[derive(Clone, Encode, Decode, PartialEq, TypeInfo)]
+	#[scale_info(skip_type_params(T))]
 	pub struct Ham<T: Config> {
 		id: [u8; 16],
 		price: Option<BalanceOf<T>>,
@@ -94,7 +98,8 @@ pub mod pallet_ham {
 		TransferToSelf,
 		/// Handles checking whether the Ham exists.
 		HamNotExist,
-		/// Handles checking that the Ham is owned by the account transferring, buying or setting a price for it.
+		/// Handles checking that the Ham is owned by the account transferring, buying or setting a
+		/// price for it.
 		NotHamOwner,
 		/// Ensures the Ham is for sale.
 		HamNotForSale,
@@ -105,7 +110,6 @@ pub mod pallet_ham {
 	}
 
 	#[pallet::event]
-	#[pallet::metadata(T::AccountId = "AccountId")]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
 		Created(T::AccountId, T::Hash),
@@ -296,7 +300,7 @@ pub mod pallet_ham {
 			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
 				if let Some(ind) = owned.iter().position(|&id| id == *ham_id) {
 					owned.swap_remove(ind);
-					return Ok(());
+					return Ok(())
 				}
 				Err(())
 			})
