@@ -290,15 +290,15 @@ construct_runtime!(
 		UncheckedExtrinsic = UncheckedExtrinsic
 	{
 		System: frame_system,
-		RandomnessCollectiveFlip: pallet_randomness_collective_flip,
-		Timestamp: pallet_timestamp,
-		Aura: pallet_aura,
-		Grandpa: pallet_grandpa,
-		Balances: pallet_balances,
+		RandomnessCollectiveFlip: pallet_randomness_collective_flip::{Pallet, Storage},
+		Timestamp: pallet_timestamp::{Pallet, Call, Storage, Inherent},
+		Aura: pallet_aura::{Pallet, Config<T>},
+		Grandpa: pallet_grandpa::{Pallet, Call, Storage, Config, Event},
+		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
 		TransactionPayment: pallet_transaction_payment,
-		Sudo: pallet_sudo,
+		Sudo: pallet_sudo::{Pallet, Call, Config<T>, Storage, Event<T>},
 		// Include the custom logic from the pallet-template in the runtime.
-		HamModule: pallet_ham
+		HamModule: pallet_ham::{Pallet, Call, Storage, Event<T>}
 	}
 );
 
@@ -326,7 +326,7 @@ pub type Executive = frame_executive::Executive<
 	Block,
 	frame_system::ChainContext<Runtime>,
 	Runtime,
-	AllPallets,
+	AllPalletsWithSystem,
 >;
 
 impl_runtime_apis! {
