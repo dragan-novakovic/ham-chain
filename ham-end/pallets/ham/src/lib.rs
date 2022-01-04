@@ -79,6 +79,15 @@ pub mod pallet_ham {
 
 	#[derive(Clone, Encode, Decode, PartialEq, TypeInfo)]
 	#[scale_info(skip_type_params(T))]
+	pub struct Animal<T: Config> {
+		id: [u8; 16],
+		name: String,
+		farm_name: String,
+		owner: AccountOf<T>,
+	}
+
+	#[derive(Clone, Encode, Decode, PartialEq, TypeInfo)]
+	#[scale_info(skip_type_params(T))]
 	pub struct Ham<T: Config> {
 		id: [u8; 16],
 		price: Option<BalanceOf<T>>,
@@ -126,6 +135,10 @@ pub mod pallet_ham {
 	pub(super) type Hams<T: Config> = StorageMap<_, Twox64Concat, T::Hash, Ham<T>>;
 
 	#[pallet::storage]
+	#[pallet::getter(fn animals)]
+	pub(super) type Animals<T: Config> = StorageMap<_, Twox64Concat, T::Hash, Animal<T>>;
+
+	#[pallet::storage]
 	#[pallet::getter(fn all_hams_count)]
 	pub(super) type AllHamsCount<T: Config> = StorageValue<_, u64, ValueQuery>;
 
@@ -167,6 +180,21 @@ pub mod pallet_ham {
 			info!("A Ham is born with ID {:?}.", ham_id);
 			// Self::increment_nonce()?;
 			Self::deposit_event(Event::Created(sender, ham_id));
+			Ok(())
+		}
+
+		#[pallet::weight(100)]
+		pub fn create_animal(
+			origin: OriginFor<T>,
+			name: String,
+			farm_name: String,
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
+			let animal_id = Self::mint_animal(&sender, Self::gen_kinda_hash(), name, farm_name)?;
+
+			info!("A New Animal with ID {:?}.", animal_id);
+
+			Self::deposit_event(Event::Created(sender, animal_id));
 			Ok(())
 		}
 
@@ -289,6 +317,18 @@ pub mod pallet_ham {
 			Self::deposit_event(Event::Created(owner.clone(), ham_hash));
 
 			Ok(ham_hash)
+		}
+
+		fn mint_animal(
+			owner: &T::AccountId,
+			random_hash: [u8; 16],
+			name: String,
+			farm_name: String,
+		) -> Result<T::Hash, Error<T>> {
+			let new_animal = Animal::<T> { id: random_hash, name, farm_name, owner: owner.clone() };
+			let animal_hash = T::Hashing::hash_of(&new_animal);
+
+			Ok(animal_hash)
 		}
 
 		#[transactional]
