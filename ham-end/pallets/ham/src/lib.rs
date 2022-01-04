@@ -81,8 +81,8 @@ pub mod pallet_ham {
 	#[scale_info(skip_type_params(T))]
 	pub struct Animal<T: Config> {
 		id: [u8; 16],
-		name: String,
-		farm_name: String,
+		// name: String,
+		// farm_name: String,
 		owner: AccountOf<T>,
 	}
 
@@ -184,13 +184,9 @@ pub mod pallet_ham {
 		}
 
 		#[pallet::weight(100)]
-		pub fn create_animal(
-			origin: OriginFor<T>,
-			name: String,
-			farm_name: String,
-		) -> DispatchResult {
+		pub fn create_animal(origin: OriginFor<T>) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
-			let animal_id = Self::mint_animal(&sender, Self::gen_kinda_hash(), name, farm_name)?;
+			let animal_id = Self::mint_animal(&sender, Self::gen_kinda_hash())?;
 
 			info!("A New Animal with ID {:?}.", animal_id);
 
@@ -319,13 +315,8 @@ pub mod pallet_ham {
 			Ok(ham_hash)
 		}
 
-		fn mint_animal(
-			owner: &T::AccountId,
-			random_hash: [u8; 16],
-			name: String,
-			farm_name: String,
-		) -> Result<T::Hash, Error<T>> {
-			let new_animal = Animal::<T> { id: random_hash, name, farm_name, owner: owner.clone() };
+		fn mint_animal(owner: &T::AccountId, random_hash: [u8; 16]) -> Result<T::Hash, Error<T>> {
+			let new_animal = Animal::<T> { id: random_hash, owner: owner.clone() };
 			let animal_hash = T::Hashing::hash_of(&new_animal);
 
 			Ok(animal_hash)

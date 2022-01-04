@@ -1,12 +1,5 @@
 import React, { useState, createRef } from "react";
-import {
-  Container,
-  Dimmer,
-  Loader,
-  Grid,
-  Sticky,
-  Message,
-} from "semantic-ui-react";
+import { Container, Dimmer, Loader, Grid, Message } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 
 import { SubstrateContextProvider, useSubstrate } from "./substrate-lib";
@@ -63,31 +56,20 @@ function Main() {
 
   return (
     <div ref={contextRef}>
-      <Sticky context={contextRef}>
-        <AccountSelector setAccountAddress={setAccountAddress} />
-      </Sticky>
+      <AccountSelector setAccountAddress={setAccountAddress} />
       <Container>
         <Grid stackable columns="equal">
-          <Grid.Row stretched>
-            <NodeInfo />
-            <Metadata />
-            <BlockNumber />
-            <BlockNumber finalized />
-          </Grid.Row>
-
-          {/* <Grid.Row stretched>
-            <Balances />
-          </Grid.Row> */}
           <Grid.Row>
             <Interactor accountPair={accountPair} />
             <Events />
           </Grid.Row>
           <Grid.Row>
-            <CreateHam />
+            <textarea placeholder={"Placeholder"} />
+            {console.log(keyring)}
           </Grid.Row>
         </Grid>
       </Container>
-      <DeveloperConsole />
+      {/* <DeveloperConsole /> */}
     </div>
   );
 }

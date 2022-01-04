@@ -1,7 +1,7 @@
 import React from "react";
-import { Button, Checkbox, Form } from "semantic-ui-react";
+import { Button, Form } from "semantic-ui-react";
 
-export function CreateHam(props) {
+export function CreateHam() {
   return (
     <Form>
       <Form.Field>
@@ -11,9 +11,6 @@ export function CreateHam(props) {
       <Form.Field>
         <label>Last Name</label>
         <input placeholder="Last Name" />
-      </Form.Field>
-      <Form.Field>
-        <Checkbox label="I agree to the Terms and Conditions" />
       </Form.Field>
       <Button type="submit">Submit</Button>
     </Form>
