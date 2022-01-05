@@ -23,13 +23,13 @@ function Main() {
     keyringState === "READY" &&
     keyring.getPair(accountAddress);
 
-  const loader = (text) => (
+  const loader = (text: string) => (
     <Dimmer active>
       <Loader size="small">{text}</Loader>
     </Dimmer>
   );
 
-  const message = (err) => (
+  const message = (err: any) => (
     <Grid centered columns={2} padded>
       <Grid.Column>
         <Message
@@ -52,10 +52,8 @@ function Main() {
     );
   }
 
-  const contextRef = createRef();
-
   return (
-    <div ref={contextRef}>
+    <div>
       <AccountSelector setAccountAddress={setAccountAddress} />
       <Container>
         <Grid stackable columns="equal">
