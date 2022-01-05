@@ -6,6 +6,7 @@ import queryString from "query-string";
 import { ApiPromise, WsProvider } from "@polkadot/api";
 import { web3Accounts, web3Enable } from "@polkadot/extension-dapp";
 import keyring from "@polkadot/ui-keyring";
+import type { Keyring } from "@polkadot/ui-keyring";
 
 import config from "../config";
 
@@ -20,7 +21,7 @@ interface ContextState {
   socket: string;
   jsonrpc: any;
   types: any;
-  keyring?: any;
+  keyring?: Keyring;
   keyringState?: any;
   api?: any;
   apiError?: any;
@@ -31,7 +32,7 @@ const INIT_STATE: ContextState = {
   socket: connectedSocket,
   jsonrpc: { ...jsonrpc, ...config.RPC },
   types: config.types,
-  keyring: null,
+  keyring: undefined,
   keyringState: null,
   api: null,
   apiError: null,
@@ -102,6 +103,7 @@ const loadAccounts = (state: ContextState, dispatch: Dispatch<any>) => {
     try {
       await web3Enable(config.APP_NAME);
       let allAccounts = await web3Accounts();
+      console.log({ allAccounts });
       allAccounts = allAccounts.map(({ address, meta }) => ({
         address,
         meta: { ...meta, name: `${meta.name} (${meta.source})` },
@@ -138,7 +140,8 @@ const SubstrateContextProvider = (props: any) => {
   neededPropNames.forEach((key) => {
     ///@ts-ignore
     initState[key] =
-      typeof props[key] === "undefined" ? initState[key as Key] : props[key];
+      ///@ts-ignore
+      typeof props[key] === "undefined" ? initState[key] : props[key];
   });
 
   ///@ts-ignore
