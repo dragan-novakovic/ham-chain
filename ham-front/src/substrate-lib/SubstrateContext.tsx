@@ -1,5 +1,5 @@
 import React, { useReducer, useContext } from "react";
-import type { Dispatch } from "react";
+import type { Dispatch, ReducerAction } from "react";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 import queryString from "query-string";
 
@@ -23,7 +23,7 @@ interface ContextState {
   types: any;
   keyring?: Keyring;
   keyringState?: any;
-  api?: any;
+  api?: ApiPromise;
   apiError?: any;
   apiState?: any;
 }
@@ -34,15 +34,20 @@ const INIT_STATE: ContextState = {
   types: config.types,
   keyring: undefined,
   keyringState: null,
-  api: null,
+  api: undefined,
   apiError: null,
   apiState: null,
 };
 
+interface SubstrateAction {
+  type: string;
+  payload?: any;
+}
+
 ///
 // Reducer function for `useReducer`
 
-const reducer = (state: ContextState, action: any) => {
+const reducer = (state: ContextState, action: SubstrateAction) => {
   switch (action.type) {
     case "CONNECT_INIT":
       return { ...state, apiState: "CONNECT_INIT" };

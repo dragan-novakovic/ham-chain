@@ -62,8 +62,7 @@ function Main() {
             <Events />
           </Grid.Row>
           <Grid.Row>
-            <textarea placeholder={"Placeholder"} />
-            {console.log(keyring)}
+            <CreateHam />
           </Grid.Row>
         </Grid>
       </Container>
