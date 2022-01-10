@@ -53,6 +53,7 @@ function Main(props: any) {
     if (!api || palletRpc === "") {
       return;
     }
+    // api.tx[hamModule]
     const callables = Object.keys(getApiType(api, interxType)[palletRpc])
       .sort()
       .map((c) => ({ key: c, value: c, text: c }));
@@ -95,6 +96,8 @@ function Main(props: any) {
       }
     } else if (interxType === "EXTRINSIC") {
       const metaArgs = api.tx[palletRpc][callable].meta.args;
+      //   console.log("INIT ARGS:", palletRpc, callable);
+      console.log({ metaArgs });
 
       if (metaArgs && metaArgs.length > 0) {
         paramFields = metaArgs.map((arg: any) => ({
@@ -102,6 +105,8 @@ function Main(props: any) {
           type: arg.type.toString(),
           optional: argIsOptional(arg),
         }));
+
+        console.log({ paramFields });
       }
     } else if (interxType === "RPC") {
       let metaParam = [];
@@ -264,6 +269,7 @@ function Main(props: any) {
 }
 
 function InteractorSubmit(props: any) {
+  //console.log("IS submit:", { props });
   const {
     attrs: { interxType },
   } = props;

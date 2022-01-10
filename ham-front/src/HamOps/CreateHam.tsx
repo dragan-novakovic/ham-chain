@@ -1,18 +1,34 @@
 import { ApiPromise } from "@polkadot/api";
-import React, { useRef, useEffect } from "react";
+import { SubmittableModuleExtrinsics } from "@polkadot/api/types";
+import React, { useRef, useEffect, useState } from "react";
 import { Button, Form } from "semantic-ui-react";
 import { useSubstrate } from "../substrate-lib";
 
 export function CreateHam() {
   const { api } = useSubstrate();
+  const [, setPalletRPCs] = useState<string[]>([]);
+  const [txModule, setTxModule] =
+    useState<SubmittableModuleExtrinsics<"promise">>();
   const _api: ApiPromise = api;
   const hamKindRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    const palletRPCs = Object.keys(api.tx);
+    setPalletRPCs(palletRPCs);
+    setTxModule(_api.tx["hamModule"]);
+  }, [api]);
+
   const sumbit = async () => {
-    const tm = await _api.tx;
-    console.log({ tm });
+    const metaArgs = _api.tx["hamModule"]["createHam"].meta.args;
+    const paramFields = metaArgs.map((arg: any) => ({
+      name: arg.name.toString(),
+      type: arg.type.toString(),
+      optional: true,
+    }));
+
+    console.log({ paramFields });
+    // console.log(_api.query["hamModule"].hams());
   };
-  console.log(api);
   return (
     <Form>
       <Form.Field>
