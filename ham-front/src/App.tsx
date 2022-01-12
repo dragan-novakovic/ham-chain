@@ -62,7 +62,7 @@ function Main() {
             <Events />
           </Grid.Row>
           <Grid.Row>
-            <CreateHam />
+            <CreateHam accountPair={accountPair} />
           </Grid.Row>
         </Grid>
       </Container>

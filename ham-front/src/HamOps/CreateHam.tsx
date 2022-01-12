@@ -1,9 +1,11 @@
 import { ApiPromise } from "@polkadot/api";
 import { SubmittableModuleExtrinsics } from "@polkadot/api/types";
+import { web3FromSource } from "@polkadot/extension-dapp";
+import { ISubmittableResult } from "@polkadot/types/types";
 import React, { useRef, useEffect, useState } from "react";
 import { Button, Form } from "semantic-ui-react";
 import { useSubstrate } from "../substrate-lib";
-import { isOptional } from "../utils";
+import { isOptional, txErrHandler, txResHandler } from "../utils";
 
 // To-Do!
 //  const metaArgs = _api.tx["hamModule"]["createHam"].meta.args;
@@ -13,11 +15,31 @@ import { isOptional } from "../utils";
 //     optional: isOptional(arg.type.toString()),
 //   }));
 
-export function CreateHam() {
+export function CreateHam(props: any) {
   const { api } = useSubstrate();
+  const { accountPair } = props;
   const [_ham_count, setHamCount] = useState<any>();
   const _api: ApiPromise = api;
   const hamKindRef = useRef<HTMLInputElement>(null);
+
+  const getFromAcct = async () => {
+    const {
+      address,
+      meta: { source, isInjected },
+    } = accountPair;
+    let fromAcct;
+
+    // signer is from Polkadot-js browser extension
+    if (isInjected) {
+      const injected = await web3FromSource(source);
+      fromAcct = address;
+      api.setSigner(injected.signer);
+    } else {
+      fromAcct = accountPair;
+    }
+
+    return fromAcct;
+  };
 
   useEffect(() => {
     _api.query["hamModule"].allHamsCount().then((r) => {
@@ -29,8 +51,10 @@ export function CreateHam() {
   const sumbit = async () => {
     _api.tx["hamModule"]
       .createHam(null)
-      .signAndSend(fromAcct, txResHandler)
-      .catch(txErrHandler);
+      .signAndSend(await getFromAcct(), (result: ISubmittableResult) => {
+        console.log(result);
+      })
+      .catch((err) => console.error(err));
   };
   return (
     <div style={{ border: "1px solid black", padding: 100 }}>
