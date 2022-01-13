@@ -19,6 +19,7 @@
     "@polkadot/util": "^8.2.2",
     "@polkadot/util-crypto": "^8.2.2",
     "@types/react": "^17.0.38",
+    "firebase": "^9.6.2",
     "query-string": "^7.0.1",
     "react": "^16.14.0",
     "react-copy-to-clipboard": "^5.0.3",
