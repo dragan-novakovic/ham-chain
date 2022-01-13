@@ -52,7 +52,7 @@ export function CreateHam(props: any) {
     _api.tx["hamModule"]
       .createHam(null)
       .signAndSend(await getFromAcct(), (result: ISubmittableResult) => {
-        console.log(result);
+        alert(txResHandler(result));
       })
       .catch((err) => console.error(err));
   };
