@@ -64,9 +64,15 @@ function Main() {
           <Grid.Row>
             <CreateHam accountPair={accountPair} />
           </Grid.Row>
+          <Grid.Row>
+            <ul>
+              <li>Account Farmer login obican + wallet</li>
+              <li>Farma kerira Animal () </li>
+              <li>Lista njegovih Animal </li>
+            </ul>
+          </Grid.Row>
         </Grid>
       </Container>
-      {/* <DeveloperConsole /> */}
     </div>
   );
 }
