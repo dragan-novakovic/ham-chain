@@ -15,6 +15,7 @@ import NodeInfo from "./NodeInfo";
 import Transfer from "./Transfer";
 import { CreateHam } from "./HamOps";
 import LoginPage from "./Pages/Login";
+import Login from "./Pages/Login";
 
 function Main() {
   const [accountAddress, setAccountAddress] = useState(null);
@@ -79,14 +80,9 @@ function Main() {
 }
 
 export default function App() {
-  // is login
-  if (true) {
-    return <LoginPage />;
-  }
-
   return (
     <SubstrateContextProvider>
-      <Main />
+      {true ? <Login /> : <Main />}
     </SubstrateContextProvider>
   );
 }
