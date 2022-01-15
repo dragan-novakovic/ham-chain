@@ -11,6 +11,7 @@ export default function LoginPage() {
     signInWithEmailAndPassword(auth, "farmer@gmail.com", "123123")
       .then((userCred) => {
         console.log(userCred);
+        // save name/uid -> map with wallet + redux
       })
       .catch((error) => {
         const errorCode = error.code;
