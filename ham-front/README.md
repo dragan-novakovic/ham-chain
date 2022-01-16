@@ -1,11 +1,3 @@
-# Substrate Front End Template
-
-The template is built with [Create React App](https://github.com/facebook/create-react-app)
-and [Polkadot js API](https://polkadot.js.org/api/). Familiarity with these tools
-will be helpful, but the template strives to be self-explanatory.
-
-## Using The Template
-
 ## Configuration
 
 The template's configuration is stored in the `src/config` directory, with

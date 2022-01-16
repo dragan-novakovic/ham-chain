@@ -3,15 +3,12 @@ import { Container, Dimmer, Loader, Grid, Message } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 
 import { SubstrateContextProvider, useSubstrate } from "./substrate-lib";
-import { DeveloperConsole } from "./substrate-lib/components";
 
 import AccountSelector from "./AccountSelector";
 import Balances from "./Balances";
-import BlockNumber from "./BlockNumber";
 import Events from "./Events";
 import Interactor from "./Interactor";
 import Metadata from "./Metadata";
-import NodeInfo from "./NodeInfo";
 import Transfer from "./Transfer";
 import { CreateHam } from "./HamOps";
 import LoginPage from "./Pages/Login";

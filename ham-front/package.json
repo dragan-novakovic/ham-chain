@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@polkadot/api": "^7.1.1",
-    "@polkadot/extension-dapp": "^0.42.4",
+    "@polkadot/extension-dapp": "^0.42.5",
     "@polkadot/keyring": "^8.2.2",
     "@polkadot/networks": "^8.2.2",
     "@polkadot/types": "^7.1.1",
@@ -60,14 +60,5 @@
     "substrate",
     "substrate-ui",
     "polkadot-js"
-  ],
-  "jest": {
-    "modulePathIgnorePatterns": [
-      "<rootDir>/src/__tests__/mock.js"
-    ],
-    "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/src/__tests__/mock.js"
-    }
-  }
+  ]
 }
