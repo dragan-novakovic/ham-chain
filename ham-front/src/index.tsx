@@ -17,7 +17,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app);
 
 import App from "./App";
+import { getFirestore } from "firebase/firestore";
 
 ReactDOM.render(<App />, document.getElementById("root"));

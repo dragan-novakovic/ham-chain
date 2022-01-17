@@ -1,5 +1,8 @@
 import React, { useRef, useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { collection, getDocs, addDoc } from "firebase/firestore";
+
+import { db } from "../index";
 
 export default function LoginPage() {
   const auth = getAuth();
@@ -9,8 +12,24 @@ export default function LoginPage() {
 
   const onSubmit = () => {
     signInWithEmailAndPassword(auth, "farmer@gmail.com", "123123")
-      .then((userCred) => {
+      .then(async (userCred) => {
         console.log(userCred);
+
+        const querySnapshot = await getDocs(collection(db, "users"));
+        querySnapshot.forEach((doc) => {
+          console.log(`${doc.id} => ${doc.data()}`);
+        });
+
+        try {
+          const docRef = await addDoc(collection(db, "users"), {
+            permission: "Ada",
+            uuid: userCred.user.uid,
+            wallet: "xxx",
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
         // save name/uid -> map with wallet + redux
       })
       .catch((error) => {
