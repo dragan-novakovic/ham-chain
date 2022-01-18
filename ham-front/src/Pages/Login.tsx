@@ -7,11 +7,11 @@ import { db } from "../index";
 export default function LoginPage() {
   const auth = getAuth();
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState<string>("farmer@gmail.com");
+  const [password, setPassword] = useState<string>("123123");
 
   const onSubmit = () => {
-    signInWithEmailAndPassword(auth, "farmer@gmail.com", "123123")
+    signInWithEmailAndPassword(auth, email, password)
       .then(async (userCred) => {
         console.log(userCred);
 
@@ -22,7 +22,7 @@ export default function LoginPage() {
 
         try {
           const docRef = await addDoc(collection(db, "users"), {
-            permission: "Ada",
+            permission: 0,
             uuid: userCred.user.uid,
             wallet: "xxx",
           });
@@ -39,14 +39,20 @@ export default function LoginPage() {
       });
   };
 
-  const handleInputChange = () => {};
+  const handleInputChange = (e: any) => {
+    if (e.target.name === "email") {
+      setEmail(e.target.value);
+    } else {
+      setPassword(e.target.value);
+    }
+  };
 
   return (
     <div>
       <h1>Login</h1>
       <hr />
-      <input placeholder="email" onChange={handleInputChange} />
-      <input placeholder="password" onChange={handleInputChange} />
+      <input placeholder="email" name="email" onChange={handleInputChange} />
+      <input placeholder="password" name="pass" onChange={handleInputChange} />
       <button onClick={onSubmit}>KLIK</button>
     </div>
   );
