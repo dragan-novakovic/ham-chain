@@ -13,8 +13,9 @@ import Transfer from "./Transfer";
 import { CreateHam } from "./HamOps";
 import LoginPage from "./Pages/Login";
 import Login from "./Pages/Login";
+import useAuth from "./utils/useAuth";
 
-function Main() {
+function Main(props: any) {
   const [accountAddress, setAccountAddress] = useState(null);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const accountPair =
@@ -77,9 +78,11 @@ function Main() {
 }
 
 export default function App() {
+  const [isLoggedIn, loginData] = useAuth();
+
   return (
     <SubstrateContextProvider>
-      {true ? <Login /> : <Main />}
+      {isLoggedIn ? <Login /> : <Main auth={loginData} />}
     </SubstrateContextProvider>
   );
 }
