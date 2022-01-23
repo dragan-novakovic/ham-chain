@@ -58,10 +58,6 @@ function Main(props: any) {
       <Container>
         <Grid stackable columns="equal">
           <Grid.Row>
-            <Interactor accountPair={accountPair} />
-            <Events />
-          </Grid.Row>
-          <Grid.Row>
             <CreateHam accountPair={accountPair} />
           </Grid.Row>
           <Grid.Row>
@@ -70,6 +66,11 @@ function Main(props: any) {
               <li>Farma kerira Animal () </li>
               <li>Lista njegovih Animal </li>
             </ul>
+          </Grid.Row>
+
+          <Grid.Row>
+            <Interactor accountPair={accountPair} />
+            <Events />
           </Grid.Row>
         </Grid>
       </Container>
