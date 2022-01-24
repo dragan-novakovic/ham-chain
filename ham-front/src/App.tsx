@@ -14,6 +14,7 @@ import { CreateHam } from "./HamOps";
 import LoginPage from "./Pages/Login";
 import Login from "./Pages/Login";
 import useAuth from "./utils/useAuth";
+import FarmView from "./Pages/FarmView";
 
 function Main(props: any) {
   const [accountAddress, setAccountAddress] = useState(null);
@@ -52,6 +53,16 @@ function Main(props: any) {
     );
   }
 
+  const selectView = (perm: number) => {
+    switch (perm) {
+      case 0:
+        return <FarmView />;
+
+      default:
+        <FarmView />;
+    }
+  };
+
   return (
     <div>
       <AccountSelector setAccountAddress={setAccountAddress} />
@@ -60,14 +71,7 @@ function Main(props: any) {
           <Grid.Row>
             <CreateHam accountPair={accountPair} />
           </Grid.Row>
-          <Grid.Row>
-            <ul>
-              <li>Account Farmer login obican + wallet</li>
-              <li>Farma kerira Animal () </li>
-              <li>Lista njegovih Animal </li>
-            </ul>
-          </Grid.Row>
-
+          {selectView(0)}
           <Grid.Row>
             <Interactor accountPair={accountPair} />
             <Events />
