@@ -15,6 +15,8 @@ import LoginPage from "./Pages/Login";
 import Login from "./Pages/Login";
 import useAuth from "./utils/useAuth";
 import FarmView from "./Pages/FarmView";
+import HamView from "./Pages/HamView";
+import CustomerView from "./Pages/CustomerView";
 
 function Main(props: any) {
   const [accountAddress, setAccountAddress] = useState(null);
@@ -56,10 +58,12 @@ function Main(props: any) {
   const selectView = (perm: number) => {
     switch (perm) {
       case 0:
-        return <FarmView />;
+        return <FarmView accountPair={accountPair} />;
+      case 1:
+        return <HamView accountPair={accountPair} />;
 
       default:
-        <FarmView />;
+        <CustomerView accountPair={accountPair} />;
     }
   };
 
@@ -68,9 +72,6 @@ function Main(props: any) {
       <AccountSelector setAccountAddress={setAccountAddress} />
       <Container>
         <Grid stackable columns="equal">
-          <Grid.Row>
-            <CreateHam accountPair={accountPair} />
-          </Grid.Row>
           {selectView(0)}
           <Grid.Row>
             <Interactor accountPair={accountPair} />
