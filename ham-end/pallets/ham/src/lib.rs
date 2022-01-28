@@ -81,8 +81,6 @@ pub mod pallet_ham {
 	#[scale_info(skip_type_params(T))]
 	pub struct Animal<T: Config> {
 		id: [u8; 16],
-		// name: String,
-		// farm_name: String,
 		owner: AccountOf<T>,
 	}
 
@@ -93,6 +91,7 @@ pub mod pallet_ham {
 		price: Option<BalanceOf<T>>,
 		ham_type: HamKind,
 		owner: AccountOf<T>,
+		//	animal: Animal<T>,
 	}
 
 	#[pallet::error]
