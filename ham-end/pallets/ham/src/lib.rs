@@ -44,13 +44,14 @@ pub mod pallet_ham {
 	#[pallet::genesis_config]
 	pub struct GenesisConfig<T: Config> {
 		pub hams: Vec<(T::AccountId, [u8; 16], HamKind)>,
+		pub animals: Vec<(T::AccountId, [u8; 16])>,
 	}
 
 	// Required to implement default for GenesisConfig.
 	#[cfg(feature = "std")]
 	impl<T: Config> Default for GenesisConfig<T> {
 		fn default() -> GenesisConfig<T> {
-			GenesisConfig { hams: vec![] }
+			GenesisConfig { hams: vec![], animals: vec![] }
 		}
 	}
 
@@ -59,8 +60,8 @@ pub mod pallet_ham {
 		fn build(&self) {
 			// When building a ham from genesis config, we require the id and ham_type to be
 			// supplied.
-			for (acct, random_hash, ham_type) in &self.hams {
-				let _ = <Pallet<T>>::mint(acct, random_hash.clone(), ham_type.clone());
+			for (acct, random_hash) in &self.animals {
+				let _ = <Pallet<T>>::mint_animal(acct, random_hash.clone());
 			}
 		}
 	}
@@ -91,16 +92,13 @@ pub mod pallet_ham {
 		price: Option<BalanceOf<T>>,
 		ham_type: HamKind,
 		owner: AccountOf<T>,
-		//	animal: Animal<T>,
+		animal_id: [u8; 16],
 	}
 
 	#[pallet::error]
 	pub enum Error<T> {
 		NonceOverflow,
-		HamCountOverflow,
-		/// An account cannot own more Hams than `MaxHamCount`.
-		ExceedMaxHamOwned,
-		/// Buyer cannot be the owner.
+		HamAddOverflow,
 		BuyerIsHamOwner,
 		/// Cannot transfer a ham to its owner.
 		TransferToSelf,
@@ -168,13 +166,17 @@ pub mod pallet_ham {
 	#[pallet::call]
 	impl<T: Config> Pallet<T> {
 		#[pallet::weight(100)]
-		pub fn create_ham(origin: OriginFor<T>, ham_kind: Option<HamKind>) -> DispatchResult {
+		pub fn create_ham(
+			origin: OriginFor<T>,
+			ham_kind: Option<HamKind>,
+			animal_id: [u8; 16],
+		) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
 			let ham_kind = match ham_kind {
 				Some(value) => value,
 				None => HamKind::default(),
 			};
-			let ham_id = Self::mint(&sender, Self::gen_kinda_hash(), ham_kind)?;
+			let ham_id = Self::mint(&sender, Self::gen_kinda_hash(), ham_kind, animal_id)?;
 
 			info!("A Ham is born with ID {:?}.", ham_id);
 			// Self::increment_nonce()?;
@@ -222,13 +224,6 @@ pub mod pallet_ham {
 			// Verify the ham is not transferring back to its owner.
 			ensure!(from != to, <Error<T>>::TransferToSelf);
 
-			// Verify the recipient has the capacity to receive one more kitty
-			let to_owned = <HamsOwned<T>>::get(&to);
-			ensure!(
-				(to_owned.len() as u32) < T::MaxHamsOwned::get(),
-				<Error<T>>::ExceedMaxHamOwned
-			);
-
 			Self::transfer_ham_to(&ham_id, &to)?;
 
 			Self::deposit_event(Event::Transferred(from, to, ham_id));
@@ -259,11 +254,7 @@ pub mod pallet_ham {
 			ensure!(T::Currency::free_balance(&buyer) >= bid_price, <Error<T>>::NotEnoughBalance);
 
 			// Verify the buyer has the capacity to receive one more ham
-			let to_owned = <HamsOwned<T>>::get(&buyer);
-			ensure!(
-				(to_owned.len() as u32) < T::MaxHamsOwned::get(),
-				<Error<T>>::ExceedMaxHamOwned
-			);
+			//	let to_owned = <HamsOwned<T>>::get(&buyer);
 
 			let seller = ham.owner.clone();
 
@@ -293,20 +284,26 @@ pub mod pallet_ham {
 			owner: &T::AccountId,
 			random_hash: [u8; 16],
 			ham_type: HamKind,
+			animal_id: [u8; 16],
 		) -> Result<T::Hash, Error<T>> {
-			let new_ham = Ham::<T> { id: random_hash, price: None, ham_type, owner: owner.clone() };
+			let new_ham = Ham::<T> {
+				id: random_hash,
+				price: None,
+				ham_type,
+				owner: owner.clone(),
+				animal_id,
+			};
 
 			let ham_hash = T::Hashing::hash_of(&new_ham);
 
 			let all_hams_count = Self::all_hams_count();
 			let new_all_hams_count =
-				all_hams_count.checked_add(1).ok_or(Error::<T>::HamCountOverflow)?;
+				all_hams_count.checked_add(1).ok_or(Error::<T>::HamAddOverflow)?;
 
 			// Update storage with new Ham
 			<Hams<T>>::insert(ham_hash, new_ham);
 			<HamOwner<T>>::insert(ham_hash, Some(&owner));
-			<HamsOwned<T>>::try_mutate(&owner, |ham_arr| ham_arr.try_push(ham_hash))
-				.map_err(|_| Error::<T>::ExceedMaxHamOwned)?;
+			<HamsOwned<T>>::try_mutate(&owner, |ham_arr| ham_arr.try_push(ham_hash)).unwrap();
 			<AllHamsCount<T>>::put(new_all_hams_count);
 
 			Self::deposit_event(Event::Created(owner.clone(), ham_hash));
@@ -330,7 +327,7 @@ pub mod pallet_ham {
 			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
 				if let Some(ind) = owned.iter().position(|&id| id == *ham_id) {
 					owned.swap_remove(ind);
-					return Ok(())
+					return Ok(());
 				}
 				Err(())
 			})
@@ -340,8 +337,7 @@ pub mod pallet_ham {
 
 			ham.price = None;
 			<Hams<T>>::insert(ham_id, ham);
-			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*ham_id))
-				.map_err(|_| <Error<T>>::ExceedMaxHamOwned)?;
+			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*ham_id)).unwrap();
 
 			Ok(())
 		}
