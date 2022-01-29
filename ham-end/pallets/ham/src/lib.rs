@@ -315,6 +315,9 @@ pub mod pallet_ham {
 			let new_animal = Animal::<T> { id: random_hash, owner: owner.clone() };
 			let animal_hash = T::Hashing::hash_of(&new_animal);
 
+			//Update storage
+			<Animals<T>>::insert(animal_hash, new_animal);
+
 			Ok(animal_hash)
 		}
 
