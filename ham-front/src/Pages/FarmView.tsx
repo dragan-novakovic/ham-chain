@@ -1,7 +1,36 @@
+import { web3FromSource } from "@polkadot/extension-dapp";
+import { useEffect } from "react";
 import { Grid } from "semantic-ui-react";
 import { CreateAnimal } from "../HamOps/CreateAnimal";
+import { useSubstrate } from "../substrate-lib";
 
 export default function FarmView({ accountPair }: any) {
+  const { api } = useSubstrate();
+  const getFromAcct = async () => {
+    const {
+      address,
+      meta: { source, isInjected },
+    } = accountPair;
+    let fromAcct;
+
+    // signer is from Polkadot-js browser extension
+    if (isInjected) {
+      const injected = await web3FromSource(source);
+      fromAcct = address;
+      api.setSigner(injected.signer);
+    } else {
+      fromAcct = accountPair;
+    }
+
+    return fromAcct;
+  };
+
+  useEffect(() => {
+    api.query["hamModule"].animals().then((r: any) => {
+      console.log(r);
+    });
+  }, [api]);
+
   return (
     <Grid.Row>
       <CreateAnimal accountPair={accountPair} />
@@ -13,3 +42,7 @@ export default function FarmView({ accountPair }: any) {
     </Grid.Row>
   );
 }
+
+export const AnimalList = () => {
+  return <div>Hello</div>;
+};
