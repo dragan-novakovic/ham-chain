@@ -9,7 +9,6 @@ import Balances from "./Balances";
 import Events from "./Events";
 import Interactor from "./Interactor";
 import Metadata from "./Metadata";
-import Transfer from "./Transfer";
 import { CreateHam } from "./HamOps";
 import LoginPage from "./Pages/Login";
 import Login from "./Pages/Login";
@@ -77,6 +76,7 @@ function Main(props: any) {
             <Interactor accountPair={accountPair} />
             <Events />
           </Grid.Row>
+          <Metadata />
         </Grid>
       </Container>
     </div>

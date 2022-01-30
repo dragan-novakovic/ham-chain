@@ -41,16 +41,16 @@ export function CreateAnimal(props: any) {
     return fromAcct;
   };
 
-  useEffect(() => {
-    _api.query["hamModule"].allHamsCount().then((r) => {
-      setHamCount(r.toString());
-      // setHamCount(ham_count);
-    });
-  }, [api]);
+  // useEffect(() => {
+  //   _api.query["hamModule"].allHamsCount().then((r) => {
+  //     setHamCount(r.toString());
+  //     // setHamCount(ham_count);
+  //   });
+  // }, [api]);
 
   const sumbit = async () => {
     _api.tx["hamModule"]
-      .createHam(null)
+      .createAnimal(null)
       .signAndSend(await getFromAcct(), (result: ISubmittableResult) => {
         alert(txResHandler(result));
       })
