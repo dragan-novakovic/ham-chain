@@ -27,7 +27,7 @@ export default function FarmView({ accountPair }: any) {
 
   useEffect(() => {
     api.query["hamModule"].animals(null).then((r: any) => {
-      console.log(r);
+      console.log("Q", r.toHuman());
     });
   }, [api]);
 

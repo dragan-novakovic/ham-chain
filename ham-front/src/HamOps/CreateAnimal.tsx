@@ -50,7 +50,7 @@ export function CreateAnimal(props: any) {
 
   const sumbit = async () => {
     _api.tx["hamModule"]
-      .createAnimal(null)
+      .createAnimal()
       .signAndSend(await getFromAcct(), (result: ISubmittableResult) => {
         alert(txResHandler(result));
       })
