@@ -8,7 +8,6 @@ import AccountSelector from "./AccountSelector";
 import Balances from "./Balances";
 import Events from "./Events";
 import Interactor from "./Interactor";
-import { CreateHam } from "./HamOps";
 import LoginPage from "./Pages/Login";
 import Login from "./Pages/Login";
 import useAuth from "./utils/useAuth";

@@ -1,5 +1,5 @@
 import React, { useReducer, useContext } from "react";
-import type { Dispatch, ReducerAction } from "react";
+import type { Dispatch } from "react";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
 import queryString from "query-string";
 
@@ -141,7 +141,6 @@ const SubstrateContextProvider = (props: any) => {
   // filtering props and merge with default param value
   const initState = { ...INIT_STATE };
   const neededPropNames = ["socket", "types"];
-  type Key = "socket" | "types";
   neededPropNames.forEach((key) => {
     ///@ts-ignore
     initState[key] =
