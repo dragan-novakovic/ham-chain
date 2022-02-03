@@ -6,7 +6,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "eject": "react-app-rewired eject"
+    "eject": "react-scripts eject"
   },
   "dependencies": {
     "@polkadot/api": "^7.6.1",
