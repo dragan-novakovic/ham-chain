@@ -22,4 +22,4 @@ export const db = getFirestore(app);
 import App from "./App";
 import { getFirestore } from "firebase/firestore";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<div>Hello</div>, document.getElementById("root"));
