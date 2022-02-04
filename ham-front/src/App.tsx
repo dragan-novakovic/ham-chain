@@ -1,19 +1,23 @@
+//@ts-nocheck
 import React, { useState, createRef } from "react";
 import { Container, Dimmer, Loader, Grid, Message } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 
-import { SubstrateContextProvider, useSubstrate } from "./substrate-lib";
+import {
+  SubstrateContextProvider,
+  useSubstrate,
+} from "./substrate-lib/SubstrateContext.tsx";
 
-import AccountSelector from "./AccountSelector";
-import Balances from "./Balances";
-import Events from "./Events";
-import Interactor from "./Interactor";
-import LoginPage from "./Pages/Login";
-import Login from "./Pages/Login";
-import useAuth from "./utils/useAuth";
-import FarmView from "./Pages/FarmView";
-import HamView from "./Pages/HamView";
-import CustomerView from "./Pages/CustomerView";
+import AccountSelector from "./AccountSelector.tsx";
+import Balances from "./Balances.tsx";
+import Events from "./Events.tsx";
+import Interactor from "./Interactor.tsx";
+import LoginPage from "./Pages/Login.tsx";
+import Login from "./Pages/Login.tsx";
+import useAuth from "./utils/useAuth.ts";
+import FarmView from "./Pages/FarmView.tsx";
+import HamView from "./Pages/HamView.tsx";
+import CustomerView from "./Pages/CustomerView.tsx";
 
 function Main(props: any) {
   const [accountAddress, setAccountAddress] = useState(null);

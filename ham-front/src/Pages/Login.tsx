@@ -2,8 +2,8 @@ import React, { useRef, useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 
-import { db } from "../index";
-import useAuth from "../utils/useAuth";
+import { db } from "../index.tsx";
+import useAuth from "../utils/useAuth.ts";
 
 export default function LoginPage() {
   const auth = getAuth();
@@ -16,7 +16,7 @@ export default function LoginPage() {
       .then(async (userCred) => {
         console.log(userCred);
 
-        useAuth(userCred);
+        // useAuth(userCred);
 
         const querySnapshot = await getDocs(collection(db, "users"));
         querySnapshot.forEach((doc) => {

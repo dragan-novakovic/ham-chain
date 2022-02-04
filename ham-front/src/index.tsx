@@ -1,6 +1,8 @@
+//@ts-nocheck
 import React from "react";
 import ReactDOM from "react-dom";
-// Import the functions you need from the SDKs you need
+import HM from "./App.tsx";
+import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -19,7 +21,4 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 
-import App from "./App";
-import { getFirestore } from "firebase/firestore";
-
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<HM />, document.getElementById("root"));

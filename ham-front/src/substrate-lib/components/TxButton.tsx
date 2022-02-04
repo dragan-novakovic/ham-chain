@@ -3,8 +3,8 @@ import type { FC } from "react";
 import { Button } from "semantic-ui-react";
 import { web3FromSource } from "@polkadot/extension-dapp";
 
-import { useSubstrate } from "..";
-import utils from "../utils";
+import { useSubstrate } from "../SubstrateContext.tsx";
+import utils from "../../utils/index.ts";
 
 const TxButton: FC<any> = ({
   accountPair = null,

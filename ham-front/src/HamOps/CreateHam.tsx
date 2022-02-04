@@ -1,10 +1,11 @@
+//@ts-nocheck
 import { ApiPromise } from "@polkadot/api";
 import { SubmittableModuleExtrinsics } from "@polkadot/api/types";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { ISubmittableResult } from "@polkadot/types/types";
 import React, { useRef, useEffect, useState } from "react";
 import { Button, Form } from "semantic-ui-react";
-import { useSubstrate } from "../substrate-lib";
+import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 import { isOptional, txErrHandler, txResHandler } from "../utils";
 
 // To-Do!

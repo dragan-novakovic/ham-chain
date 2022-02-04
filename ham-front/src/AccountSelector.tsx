@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState, useEffect } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
@@ -11,7 +12,7 @@ import {
   Label,
 } from "semantic-ui-react";
 
-import { useSubstrate } from "./substrate-lib";
+import { useSubstrate } from "./substrate-lib/SubstrateContext.tsx";
 
 function Main(props: any) {
   const { keyring } = useSubstrate();

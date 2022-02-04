@@ -1,8 +1,12 @@
+//@ts-nocheck
 import React, { useEffect, useState } from "react";
 import { Grid, Form, Dropdown, Input, Label } from "semantic-ui-react";
 
-import { useSubstrate } from "./substrate-lib";
-import { TxButton, TxGroupButton } from "./substrate-lib/components";
+import { useSubstrate } from "./substrate-lib/SubstrateContext.tsx";
+import {
+  TxButton,
+  TxGroupButton,
+} from "./substrate-lib/components/TxButton.tsx";
 
 const argIsOptional = (arg: any) => arg.type.toString().startsWith("Option<");
 

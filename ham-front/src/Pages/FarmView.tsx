@@ -1,8 +1,8 @@
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { useEffect } from "react";
 import { Grid } from "semantic-ui-react";
-import { CreateAnimal } from "../HamOps/CreateAnimal";
-import { useSubstrate } from "../substrate-lib";
+import { CreateAnimal } from "../HamOps/CreateAnimal.tsx";
+import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
 export default function FarmView({ accountPair }: any) {
   const { api } = useSubstrate();

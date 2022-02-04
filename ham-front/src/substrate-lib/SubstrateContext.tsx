@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useReducer, useContext } from "react";
 import type { Dispatch } from "react";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";

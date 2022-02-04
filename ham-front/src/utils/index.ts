@@ -1,7 +1,7 @@
 // Construct a Ham ID from storage key
 
 import { useState } from "react";
-import { useSubstrate } from "../substrate-lib";
+import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
 export const isOptional = (type: string) => type.startsWith("Option<");
 
