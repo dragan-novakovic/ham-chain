@@ -1,11 +1,13 @@
 import { web3FromSource } from "@polkadot/extension-dapp";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "semantic-ui-react";
 import { CreateAnimal } from "../HamOps/CreateAnimal.tsx";
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
 export default function FarmView({ accountPair }: any) {
   const { api } = useSubstrate();
+  const [allAnimals, setAnimals] = useState<any>([]);
+
   const getFromAcct = async () => {
     const {
       address,
@@ -25,19 +27,36 @@ export default function FarmView({ accountPair }: any) {
     return fromAcct;
   };
 
-  useEffect(() => {
-    api.query["hamModule"].animals(null).then((r: any) => {
-      console.log("Q", r.toHuman());
-    });
-  }, [api]);
+  const subscribeAnimal = () => {
+    let unsub = null;
+
+    const asyncFetch = async () => {
+      const rawData = await api.query.hamModule.animals.entries();
+      const animalList = rawData.map(([hash, option]) => {
+        const { id, owner } = option.toHuman();
+        return { hash, id, owner };
+      });
+
+      setAnimals(animalList);
+    };
+
+    asyncFetch();
+
+    return () => {
+      unsub?.();
+    };
+  };
+
+  useEffect(subscribeAnimal, [api]);
 
   return (
     <Grid.Row>
       <CreateAnimal accountPair={accountPair} />
       <ul>
         <li>Account Farmer login obican + wallet</li>
-        <li>Farma kerira Animal () </li>
-        <li>Lista njegovih Animal </li>
+        {allAnimals?.map(({ hash, id, owner }) => (
+          <li>ID: {id}</li>
+        ))}
       </ul>
     </Grid.Row>
   );
