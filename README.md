@@ -6,6 +6,14 @@
 2. cargo build 
 
 TLDR;
+1. Farmer kreira animal
+```rust
+struck Animal {
+id: Hash,
+owner: AccountOf<T>
+}
+```
+
 1. Proizvodjac kreira novi ham, podesava inicijalne vrednosti
 ```rust
 struct Ham {
@@ -13,6 +21,7 @@ struct Ham {
   price: BalanceOf<T>,
   ham_kind: HamKind
   owner: AccountOf<T>
+  animal_id: Hash
   }
 ```
 
