@@ -5,7 +5,7 @@
 1. Download rust https://www.rust-lang.org/tools/install
 2. cargo build 
 
-TLDR;
+
 1. Farmer kreira animal
 ```rust
 struck Animal {
