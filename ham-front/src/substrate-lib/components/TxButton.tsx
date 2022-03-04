@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import type { FC } from "react";
 import { Button } from "semantic-ui-react";
 import { web3FromSource } from "@polkadot/extension-dapp";
-
+//@ts-ignore
 import { useSubstrate } from "../SubstrateContext.tsx";
-import utils from "../../utils/index.ts";
+//@ts-ignore
+import utils from "../utils.ts";
 
 const TxButton: FC<any> = ({
   accountPair = null,

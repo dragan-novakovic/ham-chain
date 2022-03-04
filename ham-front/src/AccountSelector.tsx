@@ -55,10 +55,15 @@ function Main(props: any) {
     >
       <Container>
         <Menu.Menu>
-          <Image
-            src={`${process.env.PUBLIC_URL}/assets/substrate-logo.png`}
-            size="mini"
-          />
+          <div style={{ display: "flex" }}>
+            <Image
+              src={`${process.env.PUBLIC_URL}/assets/substrate-logo.png`}
+              size="mini"
+            />
+            <div style={{ marginLeft: 15 }}>
+              <p style={{ fontSize: 32, fontWeight: "bold" }}>Lager</p>
+            </div>
+          </div>
         </Menu.Menu>
         <Menu.Menu position="right" style={{ alignItems: "center" }}>
           {!accountSelected ? (

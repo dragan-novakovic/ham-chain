@@ -19,7 +19,6 @@ import { isOptional, txErrHandler, txResHandler } from "../utils/index.ts";
 export function CreateAnimal(props: any) {
   const { api } = useSubstrate();
   const { accountPair } = props;
-  const [_ham_count, setHamCount] = useState<any>();
   const _api: ApiPromise = api;
   const hamKindRef = useRef<HTMLInputElement>(null);
 
@@ -58,18 +57,17 @@ export function CreateAnimal(props: any) {
       .catch((err) => console.error(err));
   };
   return (
-    <div style={{ border: "1px solid black", padding: 100 }}>
-      <div>Current animal count: {_ham_count} </div>
+    <div style={{ border: "1px solid black", padding: 50 }}>
       <Form>
         <Form.Field>
-          <label>Animal Type</label>
+          <h4>Animal Type: </h4>
           <input
             disabled={true}
             ref={hamKindRef}
-            placeholder="Ham Type (Optional)"
+            placeholder="Animal Type (Optional) Skontaj Kako"
           />
         </Form.Field>
-        <Button type="submit" onClick={sumbit}>
+        <Button type="submit" size="small" onClick={sumbit}>
           Submit
         </Button>
       </Form>

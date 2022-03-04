@@ -74,10 +74,10 @@ function Main(props: any) {
       <Container>
         <Grid stackable columns="equal">
           {selectView(0)}
-          <Grid.Row>
+          {/* <Grid.Row>
             <Interactor accountPair={accountPair} />
             <Events />
-          </Grid.Row>
+          </Grid.Row> */}
         </Grid>
       </Container>
     </div>
