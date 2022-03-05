@@ -165,6 +165,11 @@ pub mod pallet_ham {
 		StorageMap<_, Twox64Concat, T::AccountId, BoundedVec<T::Hash, T::MaxHamsOwned>, ValueQuery>;
 
 	#[pallet::storage]
+	#[pallet::getter(fn hams_owned)]
+	pub(super) type AnimalsOwned<T: Config> =
+		StorageMap<_, Twox64Concat, T::AccountId, T::Hash, ValueQuery>;
+
+	#[pallet::storage]
 	#[pallet::getter(fn owned_hams_count)]
 	pub(super) type OwnedHamsCount<T: Config> =
 		StorageMap<_, Twox64Concat, T::AccountId, u64, ValueQuery>;
@@ -318,7 +323,7 @@ pub mod pallet_ham {
 		}
 
 		fn mint_animal(owner: &T::AccountId, random_hash: [u8; 16]) -> Result<T::Hash, Error<T>> {
-			let new_animal = Animal::<T> { id: random_hash, owner: owner.clone() };
+			let new_animal = Animal::<T> { id: random_hash, owner: owner.clone(), price: None };
 			let animal_hash = T::Hashing::hash_of(&new_animal);
 
 			//Update storage
