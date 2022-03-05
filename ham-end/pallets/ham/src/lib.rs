@@ -83,6 +83,7 @@ pub mod pallet_ham {
 	pub struct Animal<T: Config> {
 		id: [u8; 16],
 		owner: AccountOf<T>,
+		price: Option<BalanceOf<T>>,
 	}
 
 	#[derive(Clone, Encode, Decode, PartialEq, TypeInfo)]
@@ -142,6 +143,11 @@ pub mod pallet_ham {
 	#[pallet::storage]
 	#[pallet::getter(fn owner_of)]
 	pub(super) type HamOwner<T: Config> =
+		StorageMap<_, Twox64Concat, T::Hash, Option<T::AccountId>, ValueQuery>;
+
+	#[pallet::storage]
+	#[pallet::getter(fn animal_owner_of)]
+	pub(super) type AnimalOwner<T: Config> =
 		StorageMap<_, Twox64Concat, T::Hash, Option<T::AccountId>, ValueQuery>;
 
 	#[pallet::storage]
@@ -330,7 +336,7 @@ pub mod pallet_ham {
 			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
 				if let Some(ind) = owned.iter().position(|&id| id == *ham_id) {
 					owned.swap_remove(ind);
-					return Ok(());
+					return Ok(())
 				}
 				Err(())
 			})
@@ -341,6 +347,30 @@ pub mod pallet_ham {
 			ham.price = None;
 			<Hams<T>>::insert(ham_id, ham);
 			<HamsOwned<T>>::try_mutate(to, |vec| vec.try_push(*ham_id)).unwrap();
+
+			Ok(())
+		}
+
+		#[transactional]
+		pub fn transfer_animal_to(animal_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
+			let mut animal = Self::animals(&animal_id).ok_or(<Error<T>>::HamNotExist)?;
+
+			let prev_owner = animal.owner.clone();
+
+			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
+				if let Some(ind) = owned.iter().position(|&id| id == *animal_id) {
+					owned.swap_remove(ind);
+					return Ok(())
+				}
+				Err(())
+			})
+			.map_err(|_| <Error<T>>::HamNotExist)?;
+
+			animal.owner = to.clone();
+
+			animal.price = None;
+			<Animals<T>>::insert(animal_id, animal);
+			<AnimalsOwned<T>>::try_mutate(to, |vec| vec.try_push(*animal_id)).unwrap();
 
 			Ok(())
 		}
