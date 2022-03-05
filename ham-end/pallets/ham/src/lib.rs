@@ -165,7 +165,7 @@ pub mod pallet_ham {
 		StorageMap<_, Twox64Concat, T::AccountId, BoundedVec<T::Hash, T::MaxHamsOwned>, ValueQuery>;
 
 	#[pallet::storage]
-	#[pallet::getter(fn hams_owned)]
+	#[pallet::getter(fn animals_owned)]
 	pub(super) type AnimalsOwned<T: Config> =
 		StorageMap<_, Twox64Concat, T::AccountId, T::Hash, ValueQuery>;
 
