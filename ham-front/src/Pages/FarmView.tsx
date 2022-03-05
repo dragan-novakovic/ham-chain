@@ -5,6 +5,8 @@ import { Grid, Item } from "semantic-ui-react";
 //@ts-ignore
 import { CreateAnimal } from "../HamOps/CreateAnimal.tsx";
 //@ts-ignore
+import { TransferItem } from "../HamOps/Transfer.tsx";
+//@ts-ignore
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
 export default function FarmView({ accountPair }: any) {
@@ -53,31 +55,34 @@ export default function FarmView({ accountPair }: any) {
   useEffect(subscribeAnimal, [api]);
 
   return (
-    <Grid.Row divided={true} style={{ marginTop: 50 }}>
-      <Grid.Column>
-        <h3>Kreiranje:</h3>
-        <CreateAnimal accountPair={accountPair} />
-      </Grid.Column>
-      <Grid.Column>
-        <h3>Lista:</h3>
-        <Item.Group divided={true} style={{ margin: 10 }}>
-          {allAnimals?.map(({ hash, id, owner }) => (
-            <Item key={id}>
-              <Item.Image size="tiny" src="https://i.pravatar.cc/300" />
+    <>
+      <Grid.Row divided={true} style={{ marginTop: 50 }}>
+        <Grid.Column>
+          <h3>Kreiranje:</h3>
+          <CreateAnimal accountPair={accountPair} />
+        </Grid.Column>
+        <Grid.Column>
+          <h3>Lista:</h3>
+          <Item.Group divided={true} style={{ margin: 10 }}>
+            {allAnimals?.map(({ hash, id, owner }) => (
+              <Item key={id}>
+                <Item.Image size="tiny" src="https://i.pravatar.cc/300" />
 
-              <Item.Content>
-                <Item.Header>ID: {id}</Item.Header>
-                <Item.Meta>Description</Item.Meta>
-                <Item.Description>
-                  <p>Owner: {owner}</p>
-                  <p>Hash: {String(hash).substring(0, 10)}</p>
-                </Item.Description>
-                <Item.Extra>Additional Details</Item.Extra>
-              </Item.Content>
-            </Item>
-          ))}
-        </Item.Group>
-      </Grid.Column>
-    </Grid.Row>
+                <Item.Content>
+                  <Item.Header>ID: {id}</Item.Header>
+                  <Item.Meta>Description</Item.Meta>
+                  <Item.Description>
+                    <p>Owner: {owner}</p>
+                    <p>Hash: {String(hash).substring(0, 10)}</p>
+                  </Item.Description>
+                  <Item.Extra>Additional Details</Item.Extra>
+                </Item.Content>
+              </Item>
+            ))}
+          </Item.Group>
+        </Grid.Column>
+      </Grid.Row>
+      <TransferItem accountPair={accountPair} />
+    </>
   );
 }
