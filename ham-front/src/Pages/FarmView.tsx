@@ -9,6 +9,11 @@ import { TransferItem } from "../HamOps/Transfer.tsx";
 //@ts-ignore
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
+//!TO-DO
+// 1. Expand Firebase
+// Animal Description, date, name
+// wallet -> UserName
+
 export default function FarmView({ accountPair }: any) {
   const { api } = useSubstrate();
   const [allAnimals, setAnimals] = useState<any>([]);
@@ -56,14 +61,14 @@ export default function FarmView({ accountPair }: any) {
 
   return (
     <>
-      <Grid.Row divided={true} style={{ marginTop: 50 }}>
+      <Grid.Row divided style={{ marginTop: 50 }}>
         <Grid.Column>
           <h3>Kreiranje:</h3>
           <CreateAnimal accountPair={accountPair} />
         </Grid.Column>
         <Grid.Column>
           <h3>Lista:</h3>
-          <Item.Group divided={true} style={{ margin: 10 }}>
+          <Item.Group divided style={{ margin: 10 }}>
             {allAnimals?.map(({ hash, id, owner }) => (
               <Item key={id}>
                 <Item.Image size="tiny" src="https://i.pravatar.cc/300" />
