@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React, { useReducer, useContext } from "react";
 import type { Dispatch } from "react";
 import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
@@ -14,9 +13,6 @@ import config from "../config";
 const parsedQuery = queryString.parse(window.location.search);
 const connectedSocket = parsedQuery.rpc || config.PROVIDER_SOCKET;
 console.log(`Connected socket: ${connectedSocket}`);
-
-///
-// Initial state for `useReducer`
 
 interface ContextState {
   socket: string;
@@ -44,9 +40,6 @@ interface SubstrateAction {
   type: string;
   payload?: any;
 }
-
-///
-// Reducer function for `useReducer`
 
 const reducer = (state: ContextState, action: SubstrateAction) => {
   switch (action.type) {
@@ -161,7 +154,8 @@ const SubstrateContextProvider = (props: any) => {
   );
 };
 
-///@ts-ignore
-const useSubstrate = () => ({ ...useContext(SubstrateContext) });
+const useSubstrate = () => ({
+  ...useContext<ContextState>(SubstrateContext),
+});
 
 export { SubstrateContextProvider, useSubstrate };

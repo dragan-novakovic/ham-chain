@@ -1,12 +1,12 @@
-//@ts-nocheck
+import React, { useRef } from "react";
 import { ApiPromise } from "@polkadot/api";
-import { SubmittableModuleExtrinsics } from "@polkadot/api/types";
 import { web3FromSource } from "@polkadot/extension-dapp";
 import { ISubmittableResult } from "@polkadot/types/types";
-import React, { useRef, useEffect, useState } from "react";
-import { Button, Form } from "semantic-ui-react";
+import { Button, Form, Input } from "semantic-ui-react";
+//@ts-ignore
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
-import { isOptional, txErrHandler, txResHandler } from "../utils/index.ts";
+//@ts-ignore
+import { txResHandler } from "../utils/index.ts";
 
 // To-Do!
 //  const metaArgs = _api.tx["hamModule"]["createHam"].meta.args;
@@ -17,9 +17,8 @@ import { isOptional, txErrHandler, txResHandler } from "../utils/index.ts";
 //   }));
 
 export function CreateAnimal(props: any) {
-  const { api } = useSubstrate();
+  const { api }: { api: ApiPromise } = useSubstrate();
   const { accountPair } = props;
-  const _api: ApiPromise = api;
   const hamKindRef = useRef<HTMLInputElement>(null);
 
   const getFromAcct = async () => {
@@ -41,15 +40,9 @@ export function CreateAnimal(props: any) {
     return fromAcct;
   };
 
-  // useEffect(() => {
-  //   _api.query["hamModule"].allHamsCount().then((r) => {
-  //     setHamCount(r.toString());
-  //     // setHamCount(ham_count);
-  //   });
-  // }, [api]);
-
   const sumbit = async () => {
-    _api.tx["hamModule"]
+    //  console.log(hamKindRef.current.value);
+    api.tx["hamModule"]
       .createAnimal()
       .signAndSend(await getFromAcct(), (result: ISubmittableResult) => {
         alert(txResHandler(result));
@@ -57,14 +50,17 @@ export function CreateAnimal(props: any) {
       .catch((err) => console.error(err));
   };
   return (
-    <div style={{ border: "1px solid black", padding: 50 }}>
+    <div style={css.input}>
       <Form>
         <Form.Field>
           <h4>Animal Type: </h4>
-          <input
-            disabled={true}
-            ref={hamKindRef}
-            placeholder="Animal Type (Optional) Skontaj Kako"
+          <Input
+            input={{ ref: hamKindRef }}
+            placeholder="Animal Type (Optional) TO-DO"
+            icon="tags"
+            iconPosition="left"
+            label={{ tag: true, content: "Add Type" }}
+            labelPosition="right"
           />
         </Form.Field>
         <Button type="submit" size="small" onClick={sumbit}>
@@ -74,3 +70,7 @@ export function CreateAnimal(props: any) {
     </div>
   );
 }
+
+const css = {
+  input: { border: "1px solid black", padding: 50 },
+};

@@ -1,10 +1,16 @@
 {
   "HamKind": {
-    "_enum": [ "PataNegra", "Regular" ]
+    "_enum": ["PataNegra", "Regular"]
   },
   "Ham": {
     "id": "[u8; 16]",
     "price": "Option<Balance>",
-    "ham_kind": "HamKind"
+    "ham_kind": "HamKind",
+    "owner": "AccountId",
+    "animal_id": "[u8; 16]"
+  },
+  "Animal": {
+    "id": "[u8; 16]",
+    "owner": "AccountId"
   }
 }
