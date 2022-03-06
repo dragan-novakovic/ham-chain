@@ -119,10 +119,10 @@ pub mod pallet_ham {
 	#[pallet::event]
 	#[pallet::generate_deposit(pub(super) fn deposit_event)]
 	pub enum Event<T: Config> {
-		Created(T::AccountId, T::Hash),
-		PriceSet(T::AccountId, T::Hash, Option<BalanceOf<T>>),
-		Transferred(T::AccountId, T::AccountId, T::Hash),
-		Bought(T::AccountId, T::AccountId, T::Hash, BalanceOf<T>),
+		Created(T::AccountId, [u8; 16]),
+		PriceSet(T::AccountId, [u8; 16], Option<BalanceOf<T>>),
+		Transferred(T::AccountId, T::AccountId, [u8; 16]),
+		Bought(T::AccountId, T::AccountId, [u8; 16], BalanceOf<T>),
 	}
 
 	// The pallet's runtime storage items.
@@ -130,11 +130,11 @@ pub mod pallet_ham {
 
 	#[pallet::storage]
 	#[pallet::getter(fn hams)]
-	pub(super) type Hams<T: Config> = StorageMap<_, Twox64Concat, T::Hash, Ham<T>>;
+	pub(super) type Hams<T: Config> = StorageMap<_, Twox64Concat, [u8; 16], Ham<T>>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn animals)]
-	pub(super) type Animals<T: Config> = StorageMap<_, Twox64Concat, T::Hash, Animal<T>>;
+	pub(super) type Animals<T: Config> = StorageMap<_, Twox64Concat, [u8; 16], Animal<T>>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn all_hams_count)]
@@ -143,17 +143,17 @@ pub mod pallet_ham {
 	#[pallet::storage]
 	#[pallet::getter(fn owner_of)]
 	pub(super) type HamOwner<T: Config> =
-		StorageMap<_, Twox64Concat, T::Hash, Option<T::AccountId>, ValueQuery>;
+		StorageMap<_, Twox64Concat, [u8; 16], Option<T::AccountId>, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn animal_owner_of)]
 	pub(super) type AnimalOwner<T: Config> =
-		StorageMap<_, Twox64Concat, T::Hash, Option<T::AccountId>, ValueQuery>;
+		StorageMap<_, Twox64Concat, [u8; 16], Option<T::AccountId>, ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn ham_of_owner_by_index)]
 	pub(super) type OwnedHamsArray<T: Config> =
-		StorageMap<_, Twox64Concat, (T::AccountId, u64), T::Hash, ValueQuery>;
+		StorageMap<_, Twox64Concat, (T::AccountId, u64), [u8; 16], ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn get_nonce)]
@@ -161,13 +161,18 @@ pub mod pallet_ham {
 
 	#[pallet::storage]
 	#[pallet::getter(fn hams_owned)]
-	pub(super) type HamsOwned<T: Config> =
-		StorageMap<_, Twox64Concat, T::AccountId, BoundedVec<T::Hash, T::MaxHamsOwned>, ValueQuery>;
+	pub(super) type HamsOwned<T: Config> = StorageMap<
+		_,
+		Twox64Concat,
+		T::AccountId,
+		BoundedVec<[u8; 16], T::MaxHamsOwned>,
+		ValueQuery,
+	>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn animals_owned)]
 	pub(super) type AnimalsOwned<T: Config> =
-		StorageMap<_, Twox64Concat, T::AccountId, T::Hash, ValueQuery>;
+		StorageMap<_, Twox64Concat, T::AccountId, [u8; 16], ValueQuery>;
 
 	#[pallet::storage]
 	#[pallet::getter(fn owned_hams_count)]
@@ -209,7 +214,7 @@ pub mod pallet_ham {
 		#[pallet::weight(100)]
 		pub fn set_ham_price(
 			origin: OriginFor<T>,
-			ham_id: T::Hash,
+			ham_id: [u8; 16],
 			new_price: Option<BalanceOf<T>>,
 		) -> DispatchResult {
 			let sender = ensure_signed(origin)?;
@@ -226,7 +231,11 @@ pub mod pallet_ham {
 		}
 
 		#[pallet::weight(100)]
-		pub fn transfer(origin: OriginFor<T>, to: T::AccountId, ham_id: T::Hash) -> DispatchResult {
+		pub fn transfer(
+			origin: OriginFor<T>,
+			to: T::AccountId,
+			ham_id: [u8; 16],
+		) -> DispatchResult {
 			let from = ensure_signed(origin)?;
 
 			// Ensure the ham exists and is called by the ham owner
@@ -246,7 +255,7 @@ pub mod pallet_ham {
 		pub fn transfer_animal(
 			origin: OriginFor<T>,
 			to: T::AccountId,
-			animal_id: T::Hash,
+			animal_id: [u8; 16],
 		) -> DispatchResult {
 			let from = ensure_signed(origin)?;
 
@@ -267,7 +276,7 @@ pub mod pallet_ham {
 		#[pallet::weight(100)]
 		pub fn buy_ham(
 			origin: OriginFor<T>,
-			ham_id: T::Hash,
+			ham_id: [u8; 16],
 			bid_price: BalanceOf<T>,
 		) -> DispatchResult {
 			let buyer = ensure_signed(origin)?;
@@ -314,47 +323,39 @@ pub mod pallet_ham {
 
 		fn mint(
 			owner: &T::AccountId,
-			random_hash: [u8; 16],
+			ham_id: [u8; 16],
 			ham_type: HamKind,
 			animal_id: [u8; 16],
-		) -> Result<T::Hash, Error<T>> {
-			let new_ham = Ham::<T> {
-				id: random_hash,
-				price: None,
-				ham_type,
-				owner: owner.clone(),
-				animal_id,
-			};
-
-			let ham_hash = T::Hashing::hash_of(&new_ham);
+		) -> Result<[u8; 16], Error<T>> {
+			let new_ham =
+				Ham::<T> { id: ham_id, price: None, ham_type, owner: owner.clone(), animal_id };
 
 			let all_hams_count = Self::all_hams_count();
 			let new_all_hams_count =
 				all_hams_count.checked_add(1).ok_or(Error::<T>::HamAddOverflow)?;
 
 			// Update storage with new Ham
-			<Hams<T>>::insert(ham_hash, new_ham);
-			<HamOwner<T>>::insert(ham_hash, Some(&owner));
-			<HamsOwned<T>>::try_mutate(&owner, |ham_arr| ham_arr.try_push(ham_hash)).unwrap();
+			<Hams<T>>::insert(ham_id, new_ham);
+			<HamOwner<T>>::insert(ham_id, Some(&owner));
+			<HamsOwned<T>>::try_mutate(&owner, |ham_arr| ham_arr.try_push(ham_id)).unwrap();
 			<AllHamsCount<T>>::put(new_all_hams_count);
 
-			Self::deposit_event(Event::Created(owner.clone(), ham_hash));
+			Self::deposit_event(Event::Created(owner.clone(), ham_id));
 
-			Ok(ham_hash)
+			Ok(ham_id)
 		}
 
-		fn mint_animal(owner: &T::AccountId, random_hash: [u8; 16]) -> Result<T::Hash, Error<T>> {
-			let new_animal = Animal::<T> { id: random_hash, owner: owner.clone(), price: None };
-			let animal_hash = T::Hashing::hash_of(&new_animal);
+		fn mint_animal(owner: &T::AccountId, id: [u8; 16]) -> Result<[u8; 16], Error<T>> {
+			let new_animal = Animal::<T> { id, owner: owner.clone(), price: None };
 
 			//Update storage
-			<Animals<T>>::insert(animal_hash, new_animal);
+			<Animals<T>>::insert(id, new_animal);
 
-			Ok(animal_hash)
+			Ok(id)
 		}
 
 		#[transactional]
-		pub fn transfer_ham_to(ham_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
+		pub fn transfer_ham_to(ham_id: &[u8; 16], to: &T::AccountId) -> DispatchResult {
 			let mut ham = Self::hams(&ham_id).ok_or(<Error<T>>::HamNotExist)?;
 
 			let prev_owner = ham.owner.clone();
@@ -378,7 +379,7 @@ pub mod pallet_ham {
 		}
 
 		#[transactional]
-		pub fn transfer_animal_to(animal_id: &T::Hash, to: &T::AccountId) -> DispatchResult {
+		pub fn transfer_animal_to(animal_id: &[u8; 16], to: &T::AccountId) -> DispatchResult {
 			let mut animal = Self::animals(&animal_id).ok_or(<Error<T>>::HamNotExist)?;
 
 			let prev_owner = animal.owner.clone();
@@ -401,14 +402,17 @@ pub mod pallet_ham {
 			Ok(())
 		}
 
-		pub fn is_ham_owner(ham_id: &T::Hash, acct: &T::AccountId) -> Result<bool, Error<T>> {
+		pub fn is_ham_owner(ham_id: &[u8; 16], acct: &T::AccountId) -> Result<bool, Error<T>> {
 			match Self::hams(ham_id) {
 				Some(ham) => Ok(ham.owner == *acct),
 				None => Err(<Error<T>>::HamNotExist),
 			}
 		}
 
-		pub fn is_animal_owner(animal_id: &T::Hash, acct: &T::AccountId) -> Result<bool, Error<T>> {
+		pub fn is_animal_owner(
+			animal_id: &[u8; 16],
+			acct: &T::AccountId,
+		) -> Result<bool, Error<T>> {
 			match Self::animals(animal_id) {
 				Some(animal) => Ok(animal.owner == *acct),
 				None => Err(<Error<T>>::HamNotExist),
