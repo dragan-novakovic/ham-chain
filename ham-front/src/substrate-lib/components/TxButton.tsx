@@ -103,6 +103,11 @@ const TxButton: FC<any> = ({
     const transformed = transformParams(paramFields, inputParams);
     // transformed can be empty parameters
 
+    // api.tx["hamModule"]
+    //   .transfer_animal(...transformed)
+    //   .signAndSend(fromAcct, (x) => console.log(x))
+    //   .catch((e) => console.log(e));
+
     const txExecute = transformed
       ? api.tx[palletRpc][callable](...transformed)
       : api.tx[palletRpc][callable]();

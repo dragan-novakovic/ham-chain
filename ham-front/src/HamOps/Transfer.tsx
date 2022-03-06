@@ -33,7 +33,9 @@ const countryOptions = [
 export const TransferItem: FC<any> = ({ accountPair }) => {
   const [item, setItem] = useState();
   const [receiver, setReciver] = useState();
-  const tranfer = () => {};
+  const tranfer = () => {
+    console.log("idk");
+  };
 
   return (
     <Grid.Row divided style={css.input} centered>
@@ -67,8 +69,11 @@ export const TransferItem: FC<any> = ({ accountPair }) => {
           onClick={tranfer}
           attrs={{
             palletRpc: "hamModule",
-            callable: "transfer",
-            inputParams: [receiver, item],
+            callable: "transferAnimal",
+            inputParams: [
+              "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+              "0x989c58590c2908179bbc261e0376f8d5",
+            ],
             paramFields: [true, true],
           }}
         />
