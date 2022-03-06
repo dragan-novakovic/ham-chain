@@ -1,5 +1,8 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Button, Dropdown, Grid, Input } from "semantic-ui-react";
+
+//@ts-ignore
+import { TxButton } from "../substrate-lib/components/TxButton.tsx";
 
 const countryOptions = [
   { key: "af", value: "af", flag: "af", text: "Afghanistan" },
@@ -27,7 +30,9 @@ const countryOptions = [
   { key: "bj", value: "bj", flag: "bj", text: "Benin" },
 ];
 
-export const TransferItem: FC<any> = () => {
+export const TransferItem: FC<any> = ({ accountPair }) => {
+  const [item, setItem] = useState();
+  const [receiver, setReciver] = useState();
   const tranfer = () => {};
 
   return (
@@ -54,9 +59,19 @@ export const TransferItem: FC<any> = () => {
       </Grid.Column>
       <Grid.Column verticalAlign="bottom">
         {" "}
-        <Button type="submit" size="big" onClick={tranfer}>
-          Transfer
-        </Button>
+        <TxButton
+          accountPair={accountPair}
+          label="Transfer"
+          type="SIGNED-TX"
+          setStatus={console.log}
+          onClick={tranfer}
+          attrs={{
+            palletRpc: "hamModule",
+            callable: "transfer",
+            inputParams: [receiver, item],
+            paramFields: [true, true],
+          }}
+        />
       </Grid.Column>
     </Grid.Row>
   );

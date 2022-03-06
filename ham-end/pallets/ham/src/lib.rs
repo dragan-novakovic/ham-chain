@@ -242,6 +242,27 @@ pub mod pallet_ham {
 			Ok(())
 		}
 
+		#[pallet::weight(100)]
+		pub fn transfer_animal(
+			origin: OriginFor<T>,
+			to: T::AccountId,
+			animal_id: T::Hash,
+		) -> DispatchResult {
+			let from = ensure_signed(origin)?;
+
+			// Ensure the ham exists and is called by the ham owner
+			ensure!(Self::is_animal_owner(&animal_id, &from)?, <Error<T>>::NotHamOwner);
+
+			// Verify the ham is not transferring back to its owner.
+			ensure!(from != to, <Error<T>>::TransferToSelf);
+
+			Self::transfer_animal_to(&animal_id, &to)?;
+
+			Self::deposit_event(Event::Transferred(from, to, animal_id));
+
+			Ok(())
+		}
+
 		#[transactional]
 		#[pallet::weight(100)]
 		pub fn buy_ham(
@@ -383,6 +404,13 @@ pub mod pallet_ham {
 		pub fn is_ham_owner(ham_id: &T::Hash, acct: &T::AccountId) -> Result<bool, Error<T>> {
 			match Self::hams(ham_id) {
 				Some(ham) => Ok(ham.owner == *acct),
+				None => Err(<Error<T>>::HamNotExist),
+			}
+		}
+
+		pub fn is_animal_owner(animal_id: &T::Hash, acct: &T::AccountId) -> Result<bool, Error<T>> {
+			match Self::animals(animal_id) {
+				Some(animal) => Ok(animal.owner == *acct),
 				None => Err(<Error<T>>::HamNotExist),
 			}
 		}
