@@ -71,8 +71,8 @@ export const TransferItem: FC<any> = ({ accountPair }) => {
             palletRpc: "hamModule",
             callable: "transferAnimal",
             inputParams: [
-              "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-              "0x989c58590c2908179bbc261e0376f8d5",
+              "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+              "0x592e3b86b02e99e08db42cae4bd91cdc",
             ],
             paramFields: [true, true],
           }}
