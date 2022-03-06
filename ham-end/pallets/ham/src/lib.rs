@@ -375,7 +375,7 @@ pub mod pallet_ham {
 
 			animal.price = None;
 			<Animals<T>>::insert(animal_id, animal);
-			<AnimalsOwned<T>>::try_mutate(to, |vec| vec.try_push(*animal_id)).unwrap();
+			<AnimalsOwned<T>>::insert(to, animal_id);
 
 			Ok(())
 		}
