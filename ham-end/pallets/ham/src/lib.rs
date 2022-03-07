@@ -16,6 +16,7 @@ pub mod pallet_ham {
 	use frame_system::pallet_prelude::*;
 	use scale_info::TypeInfo;
 	use sp_io::hashing::blake2_128;
+	use sp_runtime::sp_std::if_std;
 
 	#[cfg(feature = "std")]
 	use serde::{Deserialize, Serialize};
@@ -366,7 +367,7 @@ pub mod pallet_ham {
 			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
 				if let Some(ind) = owned.iter().position(|&id| id == *ham_id) {
 					owned.swap_remove(ind);
-					return Ok(())
+					return Ok(());
 				}
 				Err(())
 			})
@@ -383,22 +384,15 @@ pub mod pallet_ham {
 
 		#[transactional]
 		pub fn transfer_animal_to(animal_id: &[u8; 16], to: &T::AccountId) -> DispatchResult {
-			let mut animal = Self::animals(&animal_id).ok_or(<Error<T>>::HamNotExist)?;
+			let mut animal = Self::animals(&animal_id).ok_or(<Error<T>>::AnimalNotExist)?;
 
 			let prev_owner = animal.owner.clone();
 
-			<HamsOwned<T>>::try_mutate(&prev_owner, |owned| {
-				if let Some(ind) = owned.iter().position(|&id| id == *animal_id) {
-					owned.swap_remove(ind);
-					return Ok(())
-				}
-				Err(())
-			})
-			.map_err(|_| <Error<T>>::HamNotExist)?;
+			<AnimalsOwned<T>>::swap(prev_owner, to.clone());
 
 			animal.owner = to.clone();
-
 			animal.price = None;
+
 			<Animals<T>>::insert(animal_id, animal);
 			<AnimalsOwned<T>>::insert(to, animal_id);
 
@@ -416,8 +410,7 @@ pub mod pallet_ham {
 			animal_id: &[u8; 16],
 			acct: &T::AccountId,
 		) -> Result<bool, Error<T>> {
-			// log?
-			match Self::animals(animal_id) {
+			match Self::animals(*animal_id) {
 				Some(animal) => Ok(animal.owner == *acct),
 				None => Err(<Error<T>>::AnimalNotExist),
 			}
