@@ -72,7 +72,7 @@ export const TransferItem: FC<any> = ({ accountPair }) => {
             callable: "transferAnimal",
             inputParams: [
               "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
-              "0x592e3b86b02e99e08db42cae4bd91cdc",
+              "0x2b3ffdf8a511cee88e8e2688b45358a2",
             ],
             paramFields: [true, true],
           }}
@@ -85,3 +85,28 @@ export const TransferItem: FC<any> = ({ accountPair }) => {
 const css = {
   input: { border: "1px solid black", padding: 50, marginTop: 50 },
 };
+
+/**
+
+system:ExtrinsicFailed:: (phase={"applyExtrinsic":1})-3
+{"_enum":
+{
+"Other":"Null",
+"CannotLookup":"Null",
+"BadOrigin":"Null",
+"Module":"{\"index\":\"u8\",\"error\":\"u8\"}",
+"ConsumerRemaining":"Null",
+"NoProviders":"Null",
+"Token":"SpRuntimeTokenError",
+"Arithmetic":"SpRuntimeArithmeticError"}}: 
+{"module":{"index":8,"error":4}}, HamNotExist
+{
+"weight":"u64",
+"class":"FrameSupportWeightsDispatchClass",
+"paysFee":"FrameSupportWeightsPays"}: 
+{"weight":100,"class":"Normal","paysFee":"Yes"}
+An extrinsic failed.
+
+
+
+ */

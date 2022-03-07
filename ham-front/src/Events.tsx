@@ -54,7 +54,7 @@ function Main(props: any) {
     return () => unsub && unsub();
   }, [api.query.system]);
 
-  const { feedMaxHeight = 250 } = props;
+  const { feedMaxHeight = 600 } = props;
 
   return (
     <Grid.Column width={8}>
@@ -71,6 +71,7 @@ function Main(props: any) {
       <Feed
         style={{ clear: "both", overflow: "auto", maxHeight: feedMaxHeight }}
         events={eventFeed}
+        size="large"
       />
     </Grid.Column>
   );
