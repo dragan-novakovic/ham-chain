@@ -10,7 +10,8 @@
 ```rust
 struck Animal {
 id: Hash,
-owner: AccountOf<T>
+owner: AccountOf<T>,
+price: BalanceOf<T>
 }
 ```
 
