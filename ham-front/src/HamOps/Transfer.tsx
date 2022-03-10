@@ -1,68 +1,73 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Button, Dropdown, Grid, Input } from "semantic-ui-react";
 
 //@ts-ignore
 import { TxButton } from "../substrate-lib/components/TxButton.tsx";
+//@ts-ignore
+import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
-const countryOptions = [
-  { key: "af", value: "af", flag: "af", text: "Afghanistan" },
-  { key: "ax", value: "ax", flag: "ax", text: "Aland Islands" },
-  { key: "al", value: "al", flag: "al", text: "Albania" },
-  { key: "dz", value: "dz", flag: "dz", text: "Algeria" },
-  { key: "as", value: "as", flag: "as", text: "American Samoa" },
-  { key: "ad", value: "ad", flag: "ad", text: "Andorra" },
-  { key: "ao", value: "ao", flag: "ao", text: "Angola" },
-  { key: "ai", value: "ai", flag: "ai", text: "Anguilla" },
-  { key: "ag", value: "ag", flag: "ag", text: "Antigua" },
-  { key: "ar", value: "ar", flag: "ar", text: "Argentina" },
-  { key: "am", value: "am", flag: "am", text: "Armenia" },
-  { key: "aw", value: "aw", flag: "aw", text: "Aruba" },
-  { key: "au", value: "au", flag: "au", text: "Australia" },
-  { key: "at", value: "at", flag: "at", text: "Austria" },
-  { key: "az", value: "az", flag: "az", text: "Azerbaijan" },
-  { key: "bs", value: "bs", flag: "bs", text: "Bahamas" },
-  { key: "bh", value: "bh", flag: "bh", text: "Bahrain" },
-  { key: "bd", value: "bd", flag: "bd", text: "Bangladesh" },
-  { key: "bb", value: "bb", flag: "bb", text: "Barbados" },
-  { key: "by", value: "by", flag: "by", text: "Belarus" },
-  { key: "be", value: "be", flag: "be", text: "Belgium" },
-  { key: "bz", value: "bz", flag: "bz", text: "Belize" },
-  { key: "bj", value: "bj", flag: "bj", text: "Benin" },
-];
-
-export const TransferItem: FC<any> = ({ accountPair }) => {
+export const TransferItem: FC<any> = ({ accountPair, allAnimals }) => {
+  const { keyring } = useSubstrate();
   const [item, setItem] = useState();
+  const [animals, setAnimals] = useState([]);
   const [receiver, setReciver] = useState();
   const tranfer = () => {
     console.log("idk");
   };
 
+  const keyringOptions = keyring.getPairs().map((account: any) => ({
+    key: account.address,
+    value: account.address,
+    text: account.meta.name.toUpperCase(),
+    icon: "user",
+  }));
+
+  const select = (_, data) => {
+    if (data.placeholder === "Select Animal") {
+      setItem(data.value);
+    } else {
+      setReciver(data.value);
+    }
+  };
+
+  useEffect(() => {
+    const data = allAnimals?.map(({ id }) => ({
+      key: id,
+      value: id,
+      text: id,
+      icon: "industry",
+    }));
+    setAnimals(data);
+  }, [allAnimals]);
   return (
     <Grid.Row divided style={css.input} centered>
       <Grid.Column>
         <h4>Select Animal: </h4>
         <Dropdown
-          placeholder="Select Country"
+          placeholder="Select Animal"
           fluid
           search
           selection
-          options={countryOptions}
+          options={animals}
+          onChange={select}
         />
       </Grid.Column>
       <Grid.Column>
         <h4>To:</h4>
         <Dropdown
-          placeholder="Select Country"
+          placeholder="Select Customer"
           fluid
           search
           selection
-          options={countryOptions}
+          options={keyringOptions}
+          onChange={select}
         />
       </Grid.Column>
       <Grid.Column verticalAlign="bottom">
         {" "}
         <TxButton
           accountPair={accountPair}
+          disabled={!receiver && !item}
           label="Transfer"
           type="SIGNED-TX"
           setStatus={console.log}
@@ -70,10 +75,7 @@ export const TransferItem: FC<any> = ({ accountPair }) => {
           attrs={{
             palletRpc: "hamModule",
             callable: "transferAnimal",
-            inputParams: [
-              "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
-              "0x2b3ffdf8a511cee88e8e2688b45358a2",
-            ],
+            inputParams: [receiver, item],
             paramFields: [true, true],
           }}
         />

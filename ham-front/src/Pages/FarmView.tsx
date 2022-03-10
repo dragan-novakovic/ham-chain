@@ -87,7 +87,8 @@ export default function FarmView({ accountPair }: any) {
           </Item.Group>
         </Grid.Column>
       </Grid.Row>
-      <TransferItem accountPair={accountPair} />
+      {console.log(allAnimals)}
+      <TransferItem accountPair={accountPair} allAnimals={allAnimals} />
     </>
   );
 }
