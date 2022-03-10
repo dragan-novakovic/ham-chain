@@ -1,3 +1,8 @@
+##TO-DO
+1. fix firebase
+2. Proper login/auth
+
+
 ## Configuration
 
 The template's configuration is stored in the `src/config` directory, with
