@@ -2,7 +2,9 @@ import React, { useRef, useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { collection, getDocs, addDoc } from "firebase/firestore";
 
+//@ts-ignore
 import { db } from "../index.tsx";
+//@ts-ignore
 import useAuth from "../utils/useAuth.ts";
 
 export default function LoginPage() {

@@ -87,6 +87,8 @@ function Main(props: any) {
 export default function App() {
   const [isLoggedIn, loginData] = useAuth();
 
+  console.log({isLoggedIn, loginData})
+
   return (
     <SubstrateContextProvider>
       {isLoggedIn ? <Login /> : <Main auth={loginData} />}
