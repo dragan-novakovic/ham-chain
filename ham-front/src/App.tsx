@@ -73,7 +73,7 @@ function Main(props: any) {
       <AccountSelector setAccountAddress={setAccountAddress} />
       <Container>
         <Grid stackable columns="equal">
-          {selectView(0)}
+          {selectView(1)}
           <Grid.Row>
             <Interactor accountPair={accountPair} />
             <Events />
@@ -87,7 +87,7 @@ function Main(props: any) {
 export default function App() {
   const [isLoggedIn, loginData] = useAuth();
 
-  console.log({isLoggedIn, loginData})
+  console.log({ isLoggedIn, loginData });
 
   return (
     <SubstrateContextProvider>
