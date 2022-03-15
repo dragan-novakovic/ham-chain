@@ -13,7 +13,7 @@ import { CreateHam } from "../HamOps/CreateHam.tsx";
 
 export default function HamView(props: any) {
   return (
-    <Grid.Row divided style={{ marginTop: 50 }}>
+    <Grid.Column divided style={{ marginTop: 50 }}>
       <Grid.Row>
         <h3>Animal Shop</h3>
         <Card.Group itemsPerRow={4}>
@@ -29,9 +29,10 @@ export default function HamView(props: any) {
           ))}
         </Card.Group>
       </Grid.Row>
-      <GridRow>
-        <CreateHam />
+      <GridRow style={{ margin: 16 }}>
+        <CreateHam accountPair={props.accountPair} />
       </GridRow>
-    </Grid.Row>
+      <Grid.Row>Ham Lista</Grid.Row>
+    </Grid.Column>
   );
 }
