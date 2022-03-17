@@ -13,6 +13,7 @@ import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 // 1. Expand Firebase
 // Animal Description, date, name
 // wallet -> UserName
+// AUKCIJA HAMS
 
 export default function FarmView({ accountPair }: any) {
   const { api } = useSubstrate();
