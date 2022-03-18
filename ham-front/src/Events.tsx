@@ -79,7 +79,5 @@ function Main(props: any) {
 
 export default function Events(props: any) {
   const { api } = useSubstrate();
-  return api.query && api.query.system && api.query.system.events ? (
-    <Main {...props} />
-  ) : null;
+  return api?.query?.system?.events ? <Main {...props} /> : null;
 }
