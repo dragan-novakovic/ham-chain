@@ -29,7 +29,7 @@ export default function HamView(props: any) {
           ))}
         </Card.Group>
       </Grid.Row>
-      <GridRow style={{ margin: 16 }}>
+      <GridRow style={{ marginTop: 16 }}>
         <CreateHam accountPair={props.accountPair} />
       </GridRow>
       <Grid.Row>Ham Lista</Grid.Row>

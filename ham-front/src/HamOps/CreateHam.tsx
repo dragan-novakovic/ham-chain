@@ -45,9 +45,12 @@ const countryOptions = [
 
 export function CreateHam(props: any) {
   const { api }: { api: ApiPromise } = useSubstrate();
+  const [ownedAnimals, setOwnedAnimals] = useState([]);
+
   const { accountPair } = props;
   const hamKindRef = useRef<HTMLInputElement>(null);
 
+  // move to hook
   const getFromAcct = async () => {
     const {
       address,
@@ -67,6 +70,31 @@ export function CreateHam(props: any) {
     return fromAcct;
   };
 
+  const selectHamType = () => {
+    //query possible types
+    //add to dropdown
+    //set to ref(state)
+  };
+
+  const getOwnedAnimals = () => {
+    const asyncFetch = async () => {
+      const rawData = await api.query.hamModule.animals.entries();
+      const animalList = rawData
+        .map(([hash, option]) => {
+          const { id, owner } = option.toHuman();
+
+          if (owner == account.id) {
+            return { hash, id, owner };
+          } else {
+            return null;
+          }
+        })
+        .filter(Boolean);
+
+      setOwnedAnimals(animalList);
+    };
+  };
+
   const sumbit = async () => {
     api.tx["hamModule"]
       .createHam(null)
@@ -78,6 +106,7 @@ export function CreateHam(props: any) {
   return (
     <div style={{ border: "1px solid black", padding: 100 }}>
       <Form>
+        <h2>Create Ham</h2>
         <Form.Field>
           <label>Ham Type</label>
           <input
@@ -86,7 +115,7 @@ export function CreateHam(props: any) {
             placeholder="Ham Type (Optional)"
           />
           <Dropdown
-            placeholder="Select Country"
+            placeholder="Choose Animal"
             fluid
             search
             selection
