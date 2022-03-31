@@ -7,6 +7,7 @@ import { Button, Form, Input } from "semantic-ui-react";
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 //@ts-ignore
 import { txResHandler } from "../utils/index.ts";
+import { useAccount } from "../utils/useAccount.ts";
 
 // To-Do!
 //  const metaArgs = _api.tx["hamModule"]["createHam"].meta.args;
@@ -20,6 +21,7 @@ export function CreateAnimal(props: any) {
   const { api }: { api: ApiPromise } = useSubstrate();
   const { accountPair } = props;
   const hamKindRef = useRef<HTMLInputElement>(null);
+  const acc = useAccount(accountPair, api);
 
   const getFromAcct = async () => {
     const {
@@ -49,6 +51,7 @@ export function CreateAnimal(props: any) {
       })
       .catch((err) => console.error(err));
   };
+
   return (
     <div style={css.input}>
       <Form>

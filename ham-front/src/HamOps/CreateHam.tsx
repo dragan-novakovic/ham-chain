@@ -8,6 +8,8 @@ import { Button, Dropdown, Form } from "semantic-ui-react";
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 //@ts-ignore
 import { isOptional, txErrHandler, txResHandler } from "../utils/index.ts";
+//@ts-ignore
+import { useAccount } from "../utils/useAccount.ts";
 
 const countryOptions = [
   { key: "af", value: "af", flag: "af", text: "Afghanistan" },
@@ -18,21 +20,6 @@ const countryOptions = [
   { key: "ad", value: "ad", flag: "ad", text: "Andorra" },
   { key: "ao", value: "ao", flag: "ao", text: "Angola" },
   { key: "ai", value: "ai", flag: "ai", text: "Anguilla" },
-  { key: "ag", value: "ag", flag: "ag", text: "Antigua" },
-  { key: "ar", value: "ar", flag: "ar", text: "Argentina" },
-  { key: "am", value: "am", flag: "am", text: "Armenia" },
-  { key: "aw", value: "aw", flag: "aw", text: "Aruba" },
-  { key: "au", value: "au", flag: "au", text: "Australia" },
-  { key: "at", value: "at", flag: "at", text: "Austria" },
-  { key: "az", value: "az", flag: "az", text: "Azerbaijan" },
-  { key: "bs", value: "bs", flag: "bs", text: "Bahamas" },
-  { key: "bh", value: "bh", flag: "bh", text: "Bahrain" },
-  { key: "bd", value: "bd", flag: "bd", text: "Bangladesh" },
-  { key: "bb", value: "bb", flag: "bb", text: "Barbados" },
-  { key: "by", value: "by", flag: "by", text: "Belarus" },
-  { key: "be", value: "be", flag: "be", text: "Belgium" },
-  { key: "bz", value: "bz", flag: "bz", text: "Belize" },
-  { key: "bj", value: "bj", flag: "bj", text: "Benin" },
 ];
 
 // To-Do!
@@ -48,27 +35,8 @@ export function CreateHam(props: any) {
   const [ownedAnimals, setOwnedAnimals] = useState([]);
 
   const { accountPair } = props;
+  const account = useAccount(accountPair, api);
   const hamKindRef = useRef<HTMLInputElement>(null);
-
-  // move to hook
-  const getFromAcct = async () => {
-    const {
-      address,
-      meta: { source, isInjected },
-    } = accountPair;
-    let fromAcct;
-
-    // signer is from Polkadot-js browser extension
-    if (isInjected) {
-      const injected = await web3FromSource(source);
-      fromAcct = address;
-      api.setSigner(injected.signer);
-    } else {
-      fromAcct = accountPair;
-    }
-
-    return fromAcct;
-  };
 
   const selectHamType = () => {
     //query possible types

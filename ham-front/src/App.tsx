@@ -73,7 +73,7 @@ function Main(props: any) {
       <AccountSelector setAccountAddress={setAccountAddress} />
       <Container>
         <Grid stackable columns="equal">
-          {selectView(1)}
+          {selectView(0)}
           <Grid.Row>
             <Interactor accountPair={accountPair} />
             <Events />
