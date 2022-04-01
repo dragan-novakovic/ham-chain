@@ -48,6 +48,62 @@ pub mod pallet_ham {
 		pub animals: Vec<(T::AccountId, [u8; 16])>,
 	}
 
+	/*
+
+[
+    {
+        "key": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        "value": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+        "text": "ALICE",
+        "icon": "user"
+    },
+    {
+        "key": "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY",
+        "value": "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY",
+        "text": "ALICE_STASH",
+        "icon": "user"
+    },
+    {
+        "key": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+        "value": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+        "text": "BOB",
+        "icon": "user"
+    },
+    {
+        "key": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc",
+        "value": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc",
+        "text": "BOB_STASH",
+        "icon": "user"
+    },
+    {
+        "key": "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",
+        "value": "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",
+        "text": "CHARLIE",
+        "icon": "user"
+    },
+    {
+        "key": "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy",
+        "value": "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy",
+        "text": "DAVE",
+        "icon": "user"
+    },
+    {
+        "key": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
+        "value": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
+        "text": "EVE",
+        "icon": "user"
+    },
+    {
+        "key": "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
+        "value": "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
+        "text": "FERDIE",
+        "icon": "user"
+    }
+]
+
+
+ */
+
 	// Required to implement default for GenesisConfig.
 	#[cfg(feature = "std")]
 	impl<T: Config> Default for GenesisConfig<T> {
