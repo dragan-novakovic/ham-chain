@@ -21,7 +21,7 @@ import CustomerView from "./Pages/CustomerView.tsx";
 
 function Main(props: any) {
   const [accountAddress, setAccountAddress] = useState(null);
-  const [view, setView] = useState(0);
+  const [view, setView] = useState(1);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const accountPair =
     accountAddress &&

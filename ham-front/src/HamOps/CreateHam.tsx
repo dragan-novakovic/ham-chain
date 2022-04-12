@@ -11,17 +11,6 @@ import { isOptional, txErrHandler, txResHandler } from "../utils/index.ts";
 //@ts-ignore
 import { useAccount } from "../utils/useAccount.ts";
 
-const countryOptions = [
-  { key: "af", value: "af", flag: "af", text: "Afghanistan" },
-  { key: "ax", value: "ax", flag: "ax", text: "Aland Islands" },
-  { key: "al", value: "al", flag: "al", text: "Albania" },
-  { key: "dz", value: "dz", flag: "dz", text: "Algeria" },
-  { key: "as", value: "as", flag: "as", text: "American Samoa" },
-  { key: "ad", value: "ad", flag: "ad", text: "Andorra" },
-  { key: "ao", value: "ao", flag: "ao", text: "Angola" },
-  { key: "ai", value: "ai", flag: "ai", text: "Anguilla" },
-];
-
 // To-Do!
 //  const metaArgs = _api.tx["hamModule"]["createHam"].meta.args;
 //   const paramFields = metaArgs.map((arg: any) => ({
@@ -33,8 +22,10 @@ const countryOptions = [
 export function CreateHam(props: any) {
   const { api }: { api: ApiPromise } = useSubstrate();
   const [ownedAnimals, setOwnedAnimals] = useState([]);
+  const [animal, selectAnimal] = useState(null);
 
   const { accountPair } = props;
+  console.log({ accountPair });
   const account = useAccount(accountPair, api);
   const hamKindRef = useRef<HTMLInputElement>(null);
 
@@ -51,8 +42,8 @@ export function CreateHam(props: any) {
         .map(([hash, option]) => {
           const { id, owner } = option.toHuman();
 
-          if (owner == account.id) {
-            return { hash, id, owner };
+          if (owner === account.address) {
+            return { key: hash, value: id, text: id };
           } else {
             return null;
           }
@@ -61,16 +52,21 @@ export function CreateHam(props: any) {
 
       setOwnedAnimals(animalList);
     };
+
+    asyncFetch();
   };
+
+  useEffect(() => getOwnedAnimals, [account]);
 
   const sumbit = async () => {
     api.tx["hamModule"]
-      .createHam(null)
-      .signAndSend(await getFromAcct(), (result: ISubmittableResult) => {
+      .createHam(undefined, animal)
+      .signAndSend(account, (result: ISubmittableResult) => {
         alert(txResHandler(result));
       })
       .catch((err) => console.error(err));
   };
+
   return (
     <div style={{ border: "1px solid black", padding: 100 }}>
       <Form>
@@ -87,7 +83,10 @@ export function CreateHam(props: any) {
             fluid
             search
             selection
-            options={countryOptions}
+            options={ownedAnimals}
+            onChange={(_, data) => {
+              selectAnimal(data.value);
+            }}
           />
         </Form.Field>
         <Button type="submit" onClick={sumbit}>
