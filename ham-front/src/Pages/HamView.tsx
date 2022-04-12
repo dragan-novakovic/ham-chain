@@ -5,7 +5,6 @@ import { CreateHam } from "../HamOps/CreateHam.tsx";
 
 /*
  <ul>
-        <li>kerira Ham () </li>
         <li>Lista njegovih Ham </li>
       </ul>
 
@@ -17,7 +16,7 @@ export default function HamView(props: any) {
       <Grid.Row>
         <h3>Animal Shop</h3>
         <Card.Group itemsPerRow={4}>
-          {[2, 3, 4, 5, 6, 7, 8].map((id) => (
+          {[2, 3, 4, 5, 6].map((id) => (
             <Card
               key={id}
               image="https://i.pravatar.cc/300"
@@ -32,7 +31,7 @@ export default function HamView(props: any) {
       <GridRow style={{ marginTop: 16 }}>
         <CreateHam accountPair={props.accountPair} />
       </GridRow>
-      <Grid.Row>Ham Lista</Grid.Row>
+      <Grid.Row>Ham Lista (Owned)</Grid.Row>
     </Grid.Column>
   );
 }
