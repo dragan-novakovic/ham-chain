@@ -21,6 +21,7 @@ import CustomerView from "./Pages/CustomerView.tsx";
 
 function Main(props: any) {
   const [accountAddress, setAccountAddress] = useState(null);
+  const [view, setView] = useState(0);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
   const accountPair =
     accountAddress &&
@@ -56,6 +57,10 @@ function Main(props: any) {
     );
   }
 
+  const changeView = (e) => {
+    setView(Number(e.target.value));
+  };
+
   const selectView = (perm: number) => {
     switch (perm) {
       case 0:
@@ -70,10 +75,14 @@ function Main(props: any) {
 
   return (
     <div>
+      <div>
+        Select View
+        <input onChange={changeView} />
+      </div>
       <AccountSelector setAccountAddress={setAccountAddress} />
       <Container>
         <Grid stackable columns="equal">
-          {selectView(0)}
+          {selectView(view)}
           <Grid.Row>
             <Interactor accountPair={accountPair} />
             <Events />
