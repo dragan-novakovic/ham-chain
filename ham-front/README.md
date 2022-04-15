@@ -1,7 +1,7 @@
 ##TO-DO
+
 1. fix firebase
 2. Proper login/auth
-
 
 ## Configuration
 
@@ -37,8 +37,6 @@ There are two ways to specify it:
 
 - With `PROVIDER_SOCKET` in `{common, development, production}.json`.
 - With `rpc=<ws or wss connection>` query paramter after the URL. This overrides the above setting.
-
-## Reusable Components
 
 ### useSubstrate Custom Hook
 
