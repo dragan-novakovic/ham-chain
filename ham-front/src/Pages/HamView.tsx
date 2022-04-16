@@ -13,6 +13,11 @@ import {
 import { CreateHam } from "../HamOps/CreateHam.tsx";
 //@ts-ignore
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
+//@ts-ignore
+import { isOptional, txErrHandler, txResHandler } from "../utils/index.ts";
+import { ISubmittableResult } from "@polkadot/types/types";
+//@ts-ignore
+import { useAccount } from "../utils/useAccount.ts";
 
 /*
  <ul>
@@ -24,6 +29,11 @@ import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 export default function HamView(props: any) {
   const { api } = useSubstrate();
   const [allAnimals, setAnimals] = useState<any>([]);
+
+  const { accountPair } = props;
+  console.log({ accountPair });
+  const account = useAccount(accountPair, api);
+
   const subscribeAnimal = () => {
     let unsub = null;
 
