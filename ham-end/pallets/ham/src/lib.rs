@@ -50,59 +50,59 @@ pub mod pallet_ham {
 
 	/*
 
-[
-    {
-        "key": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-        "value": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
-        "text": "ALICE",
-        "icon": "user"
-    },
-    {
-        "key": "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY",
-        "value": "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY",
-        "text": "ALICE_STASH",
-        "icon": "user"
-    },
-    {
-        "key": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
-        "value": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
-        "text": "BOB",
-        "icon": "user"
-    },
-    {
-        "key": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc",
-        "value": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc",
-        "text": "BOB_STASH",
-        "icon": "user"
-    },
-    {
-        "key": "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",
-        "value": "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",
-        "text": "CHARLIE",
-        "icon": "user"
-    },
-    {
-        "key": "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy",
-        "value": "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy",
-        "text": "DAVE",
-        "icon": "user"
-    },
-    {
-        "key": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
-        "value": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
-        "text": "EVE",
-        "icon": "user"
-    },
-    {
-        "key": "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
-        "value": "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
-        "text": "FERDIE",
-        "icon": "user"
-    }
-]
+	[
+		{
+			"key": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+			"value": "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+			"text": "ALICE",
+			"icon": "user"
+		},
+		{
+			"key": "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY",
+			"value": "5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY",
+			"text": "ALICE_STASH",
+			"icon": "user"
+		},
+		{
+			"key": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+			"value": "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+			"text": "BOB",
+			"icon": "user"
+		},
+		{
+			"key": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc",
+			"value": "5HpG9w8EBLe5XCrbczpwq5TSXvedjrBGCwqxK1iQ7qUsSWFc",
+			"text": "BOB_STASH",
+			"icon": "user"
+		},
+		{
+			"key": "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",
+			"value": "5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y",
+			"text": "CHARLIE",
+			"icon": "user"
+		},
+		{
+			"key": "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy",
+			"value": "5DAAnrj7VHTznn2AWBemMuyBwZWs6FNFjdyVXUeYum3PTXFy",
+			"text": "DAVE",
+			"icon": "user"
+		},
+		{
+			"key": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
+			"value": "5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw",
+			"text": "EVE",
+			"icon": "user"
+		},
+		{
+			"key": "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
+			"value": "5CiPPseXPECbkjWCa6MnjNokrgYjMqmKndv2rSnekmSK2DjL",
+			"text": "FERDIE",
+			"icon": "user"
+		}
+	]
 
 
- */
+	 */
 
 	// Required to implement default for GenesisConfig.
 	#[cfg(feature = "std")]
@@ -291,6 +291,25 @@ pub mod pallet_ham {
 		}
 
 		#[pallet::weight(100)]
+		pub fn set_animal_price(
+			origin: OriginFor<T>,
+			animal_id: [u8; 16],
+			new_price: Option<BalanceOf<T>>,
+		) -> DispatchResult {
+			let sender = ensure_signed(origin)?;
+			// get the animal object from storage
+			let mut animal = Self::animals(&animal_id).ok_or(Error::<T>::AnimalNotExist)?;
+			// set Animal Price
+			animal.price = new_price.clone();
+
+			<Animals<T>>::insert(&animal_id, animal);
+
+			// deposit a PriceSet event
+			Self::deposit_event(Event::PriceSet(sender, animal_id, new_price));
+			Ok(())
+		}
+
+		#[pallet::weight(100)]
 		pub fn transfer(
 			origin: OriginFor<T>,
 			to: T::AccountId,
@@ -366,6 +385,44 @@ pub mod pallet_ham {
 			Self::transfer_ham_to(&ham_id, &buyer)?;
 
 			Self::deposit_event(Event::Bought(buyer, seller, ham_id, bid_price));
+
+			Ok(())
+		}
+
+		#[transactional]
+		#[pallet::weight(100)]
+		pub fn buy_animal(
+			origin: OriginFor<T>,
+			animal_id: [u8; 16],
+			bid_price: BalanceOf<T>,
+		) -> DispatchResult {
+			let buyer = ensure_signed(origin)?;
+
+			let animal = Self::animals(&animal_id).ok_or(<Error<T>>::AnimalNotExist)?;
+			ensure!(animal.owner != buyer, <Error<T>>::BuyerisAnimalOwner);
+
+			// Check the ham is for sale and the ham ask price <= bid_price
+			if let Some(ask_price) = animal.price {
+				ensure!(ask_price <= bid_price, <Error<T>>::HamBidPriceTooLow);
+			} else {
+				Err(<Error<T>>::HamNotForSale)?;
+			}
+
+			// Check the buyer has enough free balance
+			ensure!(T::Currency::free_balance(&buyer) >= bid_price, <Error<T>>::NotEnoughBalance);
+
+			// Verify the buyer has the capacity to receive one more ham
+			//	let to_owned = <HamsOwned<T>>::get(&buyer);
+
+			let seller = animal.owner.clone();
+
+			// Transfer the amount from buyer to seller
+			T::Currency::transfer(&buyer, &seller, bid_price, ExistenceRequirement::KeepAlive)?;
+
+			// Transfer the ham from seller to buyer
+			Self::transfer_animal_to(&animal_id, &buyer)?;
+
+			Self::deposit_event(Event::Bought(buyer, seller, animal_id, bid_price));
 
 			Ok(())
 		}
