@@ -1,7 +1,18 @@
-import { Card, Grid, GridColumn, GridRow, Item } from "semantic-ui-react";
+import { useEffect, useState } from "react";
+import {
+  Card,
+  Grid,
+  GridColumn,
+  GridRow,
+  Icon,
+  Item,
+  Image,
+} from "semantic-ui-react";
 
 //@ts-ignore
 import { CreateHam } from "../HamOps/CreateHam.tsx";
+//@ts-ignore
+import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
 /*
  <ul>
@@ -11,20 +22,59 @@ import { CreateHam } from "../HamOps/CreateHam.tsx";
 */
 
 export default function HamView(props: any) {
+  const { api } = useSubstrate();
+  const [allAnimals, setAnimals] = useState<any>([]);
+  const subscribeAnimal = () => {
+    let unsub = null;
+
+    const asyncFetch = async () => {
+      const rawData = await api.query.hamModule.animals.entries();
+      const animalList = rawData.map(([hash, option]) => {
+        const { id, owner } = option.toHuman();
+        return { hash, id, owner };
+      });
+
+      setAnimals(animalList);
+    };
+
+    asyncFetch();
+
+    return () => {
+      unsub?.();
+    };
+  };
+
+  useEffect(subscribeAnimal, [api]);
+
+  const buyAnimal = (animalId) => {
+    api.tx["hamModule"]
+      .buyAnimal(animalId, 100)
+      .signAndSend(account, (result: ISubmittableResult) => {
+        alert(txResHandler(result));
+      })
+      .catch((err) => console.error(err));
+  };
+
   return (
     <Grid.Column divided style={{ marginTop: 50 }}>
       <Grid.Row>
         <h3>Animal Shop</h3>
         <Card.Group itemsPerRow={4}>
-          {[2, 3, 4, 5, 6].map((id) => (
-            <Card
-              key={id}
-              image="https://i.pravatar.cc/300"
-              header="Elliot Baker"
-              meta="Friend"
-              description="Elliot is a sound engineer living in Nashville who enjoys playing guitar and hanging with his cat."
-              extra={"BUY NOW"}
-            />
+          {allAnimals?.map(({ id, owner }) => (
+            <Card key={id}>
+              <Image src="https://i.pravatar.cc/300" wrapped ui={false} />
+              <Card.Content>
+                <Card.Header>Animal</Card.Header>
+                <Card.Meta>{id.substring(0, 12)}</Card.Meta>
+                <Card.Description>
+                  {`Owner: ${owner.substring(0, 20)}`}
+                </Card.Description>
+              </Card.Content>
+              <Card.Content extra onClick={() => buyAnimal(id)}>
+                <Icon name="user" />
+                Buy now
+              </Card.Content>{" "}
+            </Card>
           ))}
         </Card.Group>
       </Grid.Row>
