@@ -75,7 +75,7 @@ export default function HamView(props: any) {
               <Image src="https://i.pravatar.cc/300" wrapped ui={false} />
               <Card.Content>
                 <Card.Header>Animal</Card.Header>
-                <Card.Meta>{id.substring(0, 12)}</Card.Meta>
+                <Card.Meta>{id}</Card.Meta>
                 <Card.Description>
                   {`Owner: ${owner.substring(0, 20)}`}
                 </Card.Description>

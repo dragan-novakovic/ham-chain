@@ -54,10 +54,10 @@ function Main(props: any) {
     return () => unsub && unsub();
   }, [api.query.system]);
 
-  const { feedMaxHeight = 600 } = props;
+  const { feedMaxHeight = 800 } = props;
 
   return (
-    <Grid.Column width={8}>
+    <Grid.Column width={16}>
       <h1 style={{ float: "left" }}>Events</h1>
       <Button
         basic
