@@ -1,6 +1,5 @@
 //@ts-nocheck
 import React, { useState, useEffect } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import {
   Menu,
@@ -78,15 +77,13 @@ function Main(props: any) {
               </a>
             </span>
           ) : null}
-          <CopyToClipboard text={accountSelected}>
-            <Button
-              basic
-              circular
-              size="large"
-              icon="user"
-              color={accountSelected ? "green" : "red"}
-            />
-          </CopyToClipboard>
+          <Button
+            basic
+            circular
+            size="large"
+            icon="user"
+            color={accountSelected ? "green" : "red"}
+          />
           <Dropdown
             search
             selection

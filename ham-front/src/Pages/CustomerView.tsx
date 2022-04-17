@@ -26,25 +26,26 @@ import { useAccount } from "../utils/useAccount.ts";
 
 */
 
-export default function HamView(props: any) {
+export default function CustomerView(props: any) {
   const { api } = useSubstrate();
-  const [allAnimals, setAnimals] = useState<any>([]);
+  const [allHams, setHams] = useState<any>([]);
 
   const { accountPair } = props;
   console.log({ accountPair });
   const account = useAccount(accountPair, api);
 
-  const subscribeAnimal = () => {
+  const subscribeHam = () => {
     let unsub = null;
 
     const asyncFetch = async () => {
-      const rawData = await api.query.hamModule.animals.entries();
-      const animalList = rawData.map(([hash, option]) => {
+      const rawData = await api.query.hamModule.hams.entries();
+      const hamList = rawData.map(([hash, option]) => {
+        console.log("Q1", option.toHuman());
         const { id, owner } = option.toHuman();
         return { hash, id, owner };
       });
 
-      setAnimals(animalList);
+      setHams(hamList);
     };
 
     asyncFetch();
@@ -54,11 +55,11 @@ export default function HamView(props: any) {
     };
   };
 
-  useEffect(subscribeAnimal, [api]);
+  useEffect(subscribeHam, [api]);
 
-  const buyAnimal = (animalId) => {
+  const buyHam = (hamId) => {
     api.tx["hamModule"]
-      .buyAnimal(animalId, 100)
+      .buyHam(hamId, 100)
       .signAndSend(account, (result: ISubmittableResult) => {
         alert(txResHandler(result));
       })
@@ -68,19 +69,19 @@ export default function HamView(props: any) {
   return (
     <Grid.Column divided style={{ marginTop: 50 }}>
       <Grid.Row>
-        <h3>Animal Shop</h3>
+        <h3>Ham Shop</h3>
         <Card.Group itemsPerRow={4}>
-          {allAnimals?.map(({ id, owner }) => (
+          {allHams?.map(({ id, owner }) => (
             <Card key={id}>
               <Image src="https://i.pravatar.cc/300" wrapped ui={false} />
               <Card.Content>
-                <Card.Header>Animal</Card.Header>
+                <Card.Header>Ham</Card.Header>
                 <Card.Meta>{id}</Card.Meta>
                 <Card.Description>
                   {`Owner: ${owner.substring(0, 20)}`}
                 </Card.Description>
               </Card.Content>
-              <Card.Content extra onClick={() => buyAnimal(id)}>
+              <Card.Content extra onClick={() => buyHam(id)}>
                 <Icon name="user" />
                 Buy now
               </Card.Content>{" "}
@@ -88,9 +89,6 @@ export default function HamView(props: any) {
           ))}
         </Card.Group>
       </Grid.Row>
-      <GridRow style={{ marginTop: 16 }}>
-        <CreateHam accountPair={props.accountPair} />
-      </GridRow>
       <Grid.Row>Ham Lista (Owned)</Grid.Row>
     </Grid.Column>
   );
