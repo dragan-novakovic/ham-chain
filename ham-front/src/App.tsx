@@ -67,6 +67,8 @@ function Main(props: any) {
         return <FarmView accountPair={accountPair} />;
       case 1:
         return <HamView accountPair={accountPair} />;
+      case 2:
+        return <CustomerView accountPair={accountPair} />;
 
       default:
         <CustomerView accountPair={accountPair} />;
