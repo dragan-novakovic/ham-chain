@@ -9,7 +9,7 @@
 1. Farmer kreira animal
 ```rust
 struck Animal {
-id: Hash,
+id: [u8, 16],
 owner: AccountOf<T>,
 price: BalanceOf<T>
 }
@@ -18,11 +18,11 @@ price: BalanceOf<T>
 1. Proizvodjac kreira novi ham, podesava inicijalne vrednosti
 ```rust
 struct Ham {
-  id: Hash,
+  id: [u8, 16],
   price: BalanceOf<T>,
   ham_kind: HamKind
   owner: AccountOf<T>
-  animal_id: Hash
+  animal_id: [u8, 16]
   }
 ```
 
