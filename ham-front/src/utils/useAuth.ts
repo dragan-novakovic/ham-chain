@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function useAuth(data?: any) {
   if (data) {
     window.localStorage.setItem("acc", JSON.stringify(data));
@@ -12,5 +10,5 @@ export default function useAuth(data?: any) {
     return [true, JSON.parse(cache)];
   }
 
-  return [false];
+  return [false, false];
 }

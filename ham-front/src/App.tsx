@@ -18,6 +18,8 @@ import HamView from "./Pages/HamView.tsx";
 import CustomerView from "./Pages/CustomerView.tsx";
 
 function Main(props: any) {
+  console.log("LOGIN", props.loginData);
+
   const [accountAddress, setAccountAddress] = useState(null);
   const [view, setView] = useState(1);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
@@ -96,13 +98,11 @@ function Main(props: any) {
 }
 
 export default function App() {
-  const [isLoggedIn, loginData] = useAuth();
-
-  console.log({ isLoggedIn, loginData });
+  const [login, setLogin] = useState(useAuth());
 
   return (
     <SubstrateContextProvider>
-      {isLoggedIn ? <Login /> : <Main auth={loginData} />}
+      {login[0] ? <Main authData={login[1]} /> : <Login setLogin={setLogin} />}
     </SubstrateContextProvider>
   );
 }
