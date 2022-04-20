@@ -9,10 +9,8 @@ import {
 } from "./substrate-lib/SubstrateContext.tsx";
 
 import AccountSelector from "./AccountSelector.tsx";
-import Balances from "./Balances.tsx";
 import Events from "./Events.tsx";
 import Interactor from "./Interactor.tsx";
-import LoginPage from "./Pages/Login.tsx";
 import Login from "./Pages/Login.tsx";
 import useAuth from "./utils/useAuth.ts";
 import FarmView from "./Pages/FarmView.tsx";
