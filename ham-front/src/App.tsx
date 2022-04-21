@@ -11,6 +11,7 @@ import {
 import AccountSelector from "./AccountSelector.tsx";
 import Events from "./Events.tsx";
 import Interactor from "./Interactor.tsx";
+import Balances from "./Balances.tsx";
 import Login from "./Pages/Login.tsx";
 import useAuth from "./utils/useAuth.ts";
 import FarmView from "./Pages/FarmView.tsx";
@@ -88,6 +89,9 @@ function Main(props: any) {
           </Grid.Row>
           <Grid.Row>
             <Interactor accountPair={accountPair} />
+          </Grid.Row>
+          <Grid.Row>
+            <Balances />
           </Grid.Row>
         </Grid>
       </Container>
