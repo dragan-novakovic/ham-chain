@@ -18,14 +18,9 @@ import FarmView from "./Pages/FarmView.tsx";
 import HamView from "./Pages/HamView.tsx";
 import CustomerView from "./Pages/CustomerView.tsx";
 
-function Main(props: any) {
-  const [accountAddress, setAccountAddress] = useState(null);
+function Main({ accountPair }) {
   const [view, setView] = useState(1);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const accountPair =
-    accountAddress &&
-    keyringState === "READY" &&
-    keyring.getPair(accountAddress);
 
   const loader = (text: string) => (
     <Dimmer active>
@@ -80,7 +75,6 @@ function Main(props: any) {
         Select View
         <input onChange={changeView} />
       </div>
-      <AccountSelector setAccountAddress={setAccountAddress} />
       <Container>
         <Grid stackable columns="equal">
           {selectView(view)}
@@ -100,11 +94,22 @@ function Main(props: any) {
 }
 
 export default function App() {
+  const [accountAddress, setAccountAddress] = useState(null);
+  const { apiState, keyring, keyringState, apiError } = useSubstrate();
+  const accountPair =
+    accountAddress &&
+    keyringState === "READY" &&
+    keyring.getPair(accountAddress);
   const [login, setLogin] = useState(useAuth());
 
   return (
-    <SubstrateContextProvider>
-      {login[0] ? <Main authData={login[1]} /> : <Login setLogin={setLogin} />}
-    </SubstrateContextProvider>
+    <>
+      <AccountSelector setAccountAddress={setAccountAddress} />
+      {login[0] ? (
+        <Main authData={login[1]} accountPair={accountPair} />
+      ) : (
+        <Login setLogin={setLogin} accountPair={accountPair} />
+      )}
+    </>
   );
 }
