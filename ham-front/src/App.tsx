@@ -18,8 +18,6 @@ import HamView from "./Pages/HamView.tsx";
 import CustomerView from "./Pages/CustomerView.tsx";
 
 function Main(props: any) {
-  console.log("LOGIN", props.loginData);
-
   const [accountAddress, setAccountAddress] = useState(null);
   const [view, setView] = useState(1);
   const { apiState, keyring, keyringState, apiError } = useSubstrate();

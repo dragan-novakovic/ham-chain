@@ -1,7 +1,8 @@
 ##TO-DO
 
 1. fix firebase
-2. Proper login/auth
+   polka-test
+   paddle ocean wave color fantasy crazy upset wave cement outer social photo
 
 ## Configuration
 
