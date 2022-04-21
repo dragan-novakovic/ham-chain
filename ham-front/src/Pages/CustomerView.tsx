@@ -31,7 +31,6 @@ export default function CustomerView(props: any) {
   const [allHams, setHams] = useState<any>([]);
 
   const { accountPair } = props;
-  console.log({ accountPair });
   const account = useAccount(accountPair, api);
 
   const subscribeHam = () => {
@@ -40,7 +39,6 @@ export default function CustomerView(props: any) {
     const asyncFetch = async () => {
       const rawData = await api.query.hamModule.hams.entries();
       const hamList = rawData.map(([hash, option]) => {
-        console.log("Q1", option.toHuman());
         const { id, owner } = option.toHuman();
         return { hash, id, owner };
       });

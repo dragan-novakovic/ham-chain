@@ -31,7 +31,6 @@ export default function HamView(props: any) {
   const [allAnimals, setAnimals] = useState<any>([]);
 
   const { accountPair } = props;
-  console.log({ accountPair });
   const account = useAccount(accountPair, api);
 
   const subscribeAnimal = () => {

@@ -38,17 +38,26 @@ export default function LoginPage(props: any) {
   };
 
   const registerNewUser = () => {
-    // createUserWithEmailAndPassword(auth, email, password)
-    //   .then((userCred) => {
-    //     // create user db
-    //     useAuth(userCred);
-    //     props.setLogin([true, userCred]);
-    //   })
-    //   .catch((error) => {
-    //     const errorCode = error.code;
-    //     const errorMessage = error.message;
-    //     console.error(errorCode, errorMessage);
-    //   });
+    if (props.accountPair?.address) {
+      const {
+        address,
+        meta: { name, source },
+      } = props.accountPair;
+
+      console.log(address, name, source);
+
+      // createUserWithEmailAndPassword(auth, email, password)
+      //   .then((userCred) => {
+      //     // create user db
+      //     useAuth(userCred);
+      //     props.setLogin([true, userCred]);
+      //   })
+      //   .catch((error) => {
+      //     const errorCode = error.code;
+      //     const errorMessage = error.message;
+      //     console.error(errorCode, errorMessage);
+      //   });
+    }
   };
 
   const handleInputChange = (e: any) => {
