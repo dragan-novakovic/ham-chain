@@ -23,8 +23,7 @@ export function CreateHam(props: any) {
   const [ownedAnimals, setOwnedAnimals] = useState([]);
   const [animal, selectAnimal] = useState(null);
 
-  const { accountPair } = props;
-  const account = useAccount(accountPair, api);
+  const { account } = props;
   const hamKindRef = useRef<HTMLInputElement>(null);
 
   const selectHamType = () => {

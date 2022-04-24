@@ -19,6 +19,9 @@ import { ISubmittableResult } from "@polkadot/types/types";
 //@ts-ignore
 import { useAccount } from "../utils/useAccount.ts";
 
+//@ts-ignore
+import ham from "../../public/assets/meat.png";
+
 /*
  <ul>
         <li>Lista njegovih Ham </li>
@@ -68,10 +71,10 @@ export default function CustomerView(props: any) {
     <Grid.Column divided="true" style={{ marginTop: 50 }}>
       <Grid.Row>
         <h3>Ham Shop</h3>
-        <Card.Group itemsPerRow={4}>
+        <Card.Group itemsPerRow={3}>
           {allHams?.map(({ id, owner }) => (
             <Card key={id}>
-              <Image src="https://i.pravatar.cc/300" wrapped ui={false} />
+              <Image src={ham} wrapped ui={false} />
               <Card.Content>
                 <Card.Header>Ham</Card.Header>
                 <Card.Meta>{id}</Card.Meta>
@@ -87,7 +90,22 @@ export default function CustomerView(props: any) {
           ))}
         </Card.Group>
       </Grid.Row>
+      <hr />
       <Grid.Row>Ham Lista (Owned)</Grid.Row>
+      {allHams
+        ?.filter((a) => a.owner === accountPair.address)
+        .map(({ id, owner }) => (
+          <Card key={id}>
+            <Image src={ham} wrapped ui={false} />
+            <Card.Content>
+              <Card.Header>Ham</Card.Header>
+              <Card.Meta>{id}</Card.Meta>
+              <Card.Description>
+                {`Owner: ${owner.substring(0, 20)}`}
+              </Card.Description>
+            </Card.Content>
+          </Card>
+        ))}
     </Grid.Column>
   );
 }

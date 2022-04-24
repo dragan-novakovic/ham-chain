@@ -8,6 +8,9 @@ import { TransferItem } from "../HamOps/Transfer.tsx";
 //@ts-ignore
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 
+//@ts-ignore
+import cow from "../../public/assets/cow.png";
+
 //!TO-DO
 // 1. Expand Firebase
 // Animal Description, date, name
@@ -51,7 +54,7 @@ export default function FarmView({ accountPair }: any) {
           <Item.Group divided style={{ margin: 10 }}>
             {allAnimals?.map(({ hash, id, owner }) => (
               <Item key={id}>
-                <Item.Image size="tiny" src="https://i.pravatar.cc/300" />
+                <Item.Image size="tiny" src={cow} />
 
                 <Item.Content>
                   <Item.Header>ID: {id}</Item.Header>
