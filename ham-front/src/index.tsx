@@ -1,6 +1,7 @@
 //@ts-nocheck
 import React from "react";
 import ReactDOM from "react-dom";
+import { RecoilRoot } from "recoil";
 import App from "./App.tsx";
 import { getFirestore } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
@@ -18,9 +19,13 @@ const firebaseConfig = {
 
 const Core = () => {
   return (
-    <SubstrateContextProvider>
-      <App />
-    </SubstrateContextProvider>
+    <RecoilRoot>
+      <SubstrateContextProvider>
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <App />
+        </React.Suspense>
+      </SubstrateContextProvider>
+    </RecoilRoot>
   );
 };
 

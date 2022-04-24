@@ -65,7 +65,7 @@ export default function CustomerView(props: any) {
   };
 
   return (
-    <Grid.Column divided style={{ marginTop: 50 }}>
+    <Grid.Column divided="true" style={{ marginTop: 50 }}>
       <Grid.Row>
         <h3>Ham Shop</h3>
         <Card.Group itemsPerRow={4}>

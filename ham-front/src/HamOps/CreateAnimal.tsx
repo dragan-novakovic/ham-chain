@@ -7,6 +7,7 @@ import { Button, Form, Input } from "semantic-ui-react";
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 //@ts-ignore
 import { txResHandler } from "../utils/index.ts";
+//@ts-ignore
 import { useAccount } from "../utils/useAccount.ts";
 
 // To-Do!
@@ -23,30 +24,10 @@ export function CreateAnimal(props: any) {
   const hamKindRef = useRef<HTMLInputElement>(null);
   const acc = useAccount(accountPair, api);
 
-  const getFromAcct = async () => {
-    const {
-      address,
-      meta: { source, isInjected },
-    } = accountPair;
-    let fromAcct;
-
-    // signer is from Polkadot-js browser extension
-    if (isInjected) {
-      const injected = await web3FromSource(source);
-      fromAcct = address;
-      api.setSigner(injected.signer);
-    } else {
-      fromAcct = accountPair;
-    }
-
-    return fromAcct;
-  };
-
   const sumbit = async () => {
-    //  console.log(hamKindRef.current.value);
     api.tx["hamModule"]
       .createAnimal()
-      .signAndSend(await getFromAcct(), (result: ISubmittableResult) => {
+      .signAndSend(acc, (result: ISubmittableResult) => {
         alert(txResHandler(result));
       })
       .catch((err) => console.error(err));

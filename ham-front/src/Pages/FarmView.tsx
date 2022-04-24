@@ -1,4 +1,3 @@
-import { web3FromSource } from "@polkadot/extension-dapp";
 import { useEffect, useState } from "react";
 import { Grid, Item } from "semantic-ui-react";
 
@@ -13,30 +12,10 @@ import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 // 1. Expand Firebase
 // Animal Description, date, name
 // wallet -> UserName
-// AUKCIJA HAMS
 
 export default function FarmView({ accountPair }: any) {
   const { api } = useSubstrate();
   const [allAnimals, setAnimals] = useState<any>([]);
-
-  const getFromAcct = async () => {
-    const {
-      address,
-      meta: { source, isInjected },
-    } = accountPair;
-    let fromAcct;
-
-    // signer is from Polkadot-js browser extension
-    if (isInjected) {
-      const injected = await web3FromSource(source);
-      fromAcct = address;
-      api.setSigner(injected.signer);
-    } else {
-      fromAcct = accountPair;
-    }
-
-    return fromAcct;
-  };
 
   const subscribeAnimal = () => {
     let unsub = null;

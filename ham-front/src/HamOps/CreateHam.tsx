@@ -1,5 +1,4 @@
 import { ApiPromise } from "@polkadot/api";
-import { web3FromSource } from "@polkadot/extension-dapp";
 import { ISubmittableResult } from "@polkadot/types/types";
 import React, { useRef, useEffect, useState } from "react";
 import { Button, Dropdown, Form } from "semantic-ui-react";
@@ -7,7 +6,7 @@ import { Button, Dropdown, Form } from "semantic-ui-react";
 //@ts-ignore
 import { useSubstrate } from "../substrate-lib/SubstrateContext.tsx";
 //@ts-ignore
-import { isOptional, txErrHandler, txResHandler } from "../utils/index.ts";
+import { txResHandler } from "../utils/index.ts";
 //@ts-ignore
 import { useAccount } from "../utils/useAccount.ts";
 
@@ -39,6 +38,7 @@ export function CreateHam(props: any) {
       const rawData = await api.query.hamModule.animals.entries();
       const animalList = rawData
         .map(([hash, option]) => {
+          //@ts-ignore
           const { id, owner } = option.toHuman();
 
           if (owner === account.address) {

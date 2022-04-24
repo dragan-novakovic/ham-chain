@@ -1,6 +1,7 @@
 //@ts-nocheck
 import React, { useState } from "react";
 import { Container, Dimmer, Loader, Grid, Message } from "semantic-ui-react";
+import { atom, selector, useRecoilState } from "recoil";
 import "semantic-ui-css/semantic.min.css";
 
 import {
@@ -17,6 +18,16 @@ import useAuth from "./utils/useAuth.ts";
 import FarmView from "./Pages/FarmView.tsx";
 import HamView from "./Pages/HamView.tsx";
 import CustomerView from "./Pages/CustomerView.tsx";
+
+const accountState = atom({
+  key: "accountState",
+  default: "Hello",
+});
+
+const accountQuery = selector({
+  key: "accountQuery",
+  get: () => async () => {},
+});
 
 function Main({ accountPair }) {
   const [view, setView] = useState(1);
@@ -64,13 +75,14 @@ function Main({ accountPair }) {
 }
 
 export default function App() {
-  const [accountAddress, setAccountAddress] = useState(null);
+  const [accountAddress, setAccountAddress] = useState();
   const { apiState, keyring, keyringState, apiError } = useSubstrate();
+  const [login, setLogin] = useState(useAuth());
+
   const accountPair =
     accountAddress &&
     keyringState === "READY" &&
     keyring.getPair(accountAddress);
-  const [login, setLogin] = useState(useAuth());
 
   const loader = (text: string) => (
     <Dimmer active>
@@ -104,11 +116,12 @@ export default function App() {
   return (
     <>
       <AccountSelector setAccountAddress={setAccountAddress} />
-      {login[0] ? (
-        <Main authData={login[1]} accountPair={accountPair} />
-      ) : (
-        <Login setLogin={setLogin} accountPair={accountPair} />
-      )}
+      {accountAddress &&
+        (login[0] ? (
+          <Main authData={login[1]} accountPair={accountPair} />
+        ) : (
+          <Login setLogin={setLogin} accountPair={accountPair} />
+        ))}
     </>
   );
 }

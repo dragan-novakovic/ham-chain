@@ -65,7 +65,7 @@ export default function HamView(props: any) {
   };
 
   return (
-    <Grid.Column divided style={{ marginTop: 50 }}>
+    <Grid.Column divided="true" style={{ marginTop: 50 }}>
       <Grid.Row>
         <h3>Animal Shop</h3>
         <Card.Group itemsPerRow={4}>
